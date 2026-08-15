@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exemple de rapport d'audit — AI Visibility Audit | Rapport d'alerte anonymisé</title>
+<meta name="description" content="Exemple de rapport d'alerte AI Visibility Audit : inventaire des usages d'IA, niveaux de risque par catégorie, alertes et recommandations priorisées. Données anonymisées et fictives.">
+<style>
+  :root{
+    --bg:#f8fafc;
+    --surface:#ffffff;
+    --ink:#0f172a;
+    --ink-2:#334155;
+    --ink-3:#64748b;
+    --blue:#1d4ed8;
+    --blue-hover:#1e40af;
+    --blue-50:#eff6ff;
+    --blue-100:#dbeafe;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --steel:#475569;
+    --ok:#16a34a;
+    --modere:#d97706;
+    --eleve:#ea580c;
+    --critique:#dc2626;
+    --radius:8px;
+    --shadow:0 1px 2px rgba(15,23,42,.06);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .container{max-width:920px;margin:0 auto;padding:0 24px}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  header.app-header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 0}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand-mark{width:34px;height:34px;flex:0 0 34px;border:1.5px solid var(--blue);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;background:var(--blue-50)}
+  .brand-name{font-size:15.5px;font-weight:700;line-height:1.2}
+  .brand-name span{color:var(--blue)}
+  .brand-sub{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+  .header-note{font-size:13px;color:var(--ink-3)}
+  .header-note strong{color:var(--eleve)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;border-radius:var(--radius);padding:11px 20px;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s;text-decoration:none!important;line-height:1.3;font-family:inherit}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-primary:hover{background:var(--blue-hover)}
+  .btn-secondary{background:var(--surface);color:var(--blue);border-color:var(--border-strong)}
+  .btn-secondary:hover{border-color:var(--blue);background:var(--blue-50)}
+  .btn-lg{padding:14px 26px;font-size:16px}
+
+  main{padding:32px 0 64px}
+  .example-banner{background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:14px;color:#78350f}
+  .example-banner strong{color:#92400e}
+
+  .report-toolbar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:26px}
+  .report-paper{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:44px 48px}
+  .print-only{display:none}
+  .rep-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:24px}
+  .rep-brand{font-size:13px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.09em}
+  .rep-org{font-size:19px;font-weight:800;color:var(--ink);margin-top:4px}
+  .rep-meta{font-size:12.5px;color:var(--ink-3);text-align:right;line-height:1.7}
+  .rep-meta strong{color:var(--steel);font-weight:600}
+
+  .score-hero{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:30px}
+  .score-big{text-align:center}
+  .score-big .num{font-size:52px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .score-big .den{font-size:15px;color:var(--ink-3);font-weight:600}
+  .score-big .lvl{display:inline-block;margin-top:8px;font-size:13px;font-weight:800;color:#fff;border-radius:999px;padding:5px 14px;letter-spacing:.02em}
+  .score-info .t{font-size:15px;font-weight:700;margin-bottom:6px}
+  .score-info .d{font-size:14px;color:var(--ink-2)}
+  .score-bar{height:9px;background:var(--border);border-radius:999px;margin-top:12px;overflow:hidden;position:relative}
+  .score-bar i{position:absolute;top:0;bottom:0;left:0;background:var(--blue);border-radius:999px}
+  .score-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:5px}
+
+  .rep-h2{font-size:16px;font-weight:800;color:var(--ink);border-left:4px solid var(--blue);padding-left:12px;margin:34px 0 16px}
+  .rep-p{font-size:14.5px;color:var(--ink-2);margin-bottom:12px}
+  .rep-p strong{color:var(--ink)}
+
+  table.rep-table{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:6px}
+  table.rep-table th{background:var(--bg);color:var(--steel);font-weight:700;text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+  table.rep-table th,table.rep-table td{border:1px solid var(--border);padding:10px 13px;vertical-align:top}
+  table.rep-table td{color:var(--ink-2)}
+  table.rep-table tr:nth-child(even) td{background:#fcfdff}
+
+  .risk-rows{display:grid;gap:10px}
+  .risk-row{border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;display:grid;grid-template-columns:200px 1fr 74px 96px;gap:16px;align-items:center}
+  .risk-row .name{font-size:14px;font-weight:700;color:var(--ink)}
+  .risk-row .bar{height:10px;background:var(--bg);border:1px solid var(--border);border-radius:999px;overflow:hidden}
+  .risk-row .bar i{display:block;height:100%;border-radius:999px}
+  .risk-row .pct{font-size:14px;font-weight:700;color:var(--steel);text-align:right}
+  .risk-row .lvl{font-size:12px;font-weight:800;color:#fff;border-radius:999px;padding:4px 10px;text-align:center;letter-spacing:.02em}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .legend span{font-size:12px;font-weight:600;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:4px 11px;background:var(--bg)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+
+  .alert-item{display:flex;gap:13px;border:1px solid var(--border);border-left:4px solid var(--border-strong);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;background:var(--surface)}
+  .alert-item.critique{border-left-color:var(--critique)}
+  .alert-item.eleve{border-left-color:var(--eleve)}
+  .alert-item.moderate{border-left-color:var(--modere)}
+  .alert-item .chip{flex:0 0 auto;font-size:11px;font-weight:800;color:#fff;border-radius:4px;padding:3px 9px;height:fit-content;letter-spacing:.03em}
+  .alert-item .txt{font-size:14px;color:var(--ink-2)}
+  .alert-item .txt strong{color:var(--ink);display:block;margin-bottom:2px}
+
+  .rec-group{margin-bottom:20px}
+  .rec-group .g-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;margin-bottom:10px;padding:8px 14px;border-radius:var(--radius)}
+  .rec-group.p1 .g-title{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+  .rec-group.p2 .g-title{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+  .rec-group.p3 .g-title{background:var(--blue-50);border:1px solid var(--blue-100);color:var(--blue-hover)}
+  .rec-group .g-title .tag{font-size:11px;font-weight:800;border-radius:4px;padding:2px 8px;color:#fff;letter-spacing:.04em}
+  .rec-group.p1 .tag{background:#b91c1c}
+  .rec-group.p2 .tag{background:#d97706}
+  .rec-group.p3 .tag{background:var(--blue)}
+  .rec-group ol{list-style:none;display:grid;gap:9px}
+  .rec-group ol li{display:flex;gap:10px;font-size:14px;color:var(--ink-2);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px}
+  .rec-group ol li::before{content:"";flex:0 0 8px;width:8px;height:8px;border-radius:50%;margin-top:7px}
+  .rec-group.p1 ol li::before{background:#b91c1c}
+  .rec-group.p2 ol li::before{background:#d97706}
+  .rec-group.p3 ol li::before{background:var(--blue)}
+
+  .next-steps{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-top:8px}
+  .next-steps h3{font-size:15px;font-weight:800;margin-bottom:10px;color:var(--ink)}
+  .next-steps p{font-size:14px;color:var(--ink-2);margin-bottom:12px}
+  .next-steps .prices{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .next-steps .prices span{font-size:13px;font-weight:700;color:var(--steel);border:1px solid var(--border-strong);border-radius:999px;padding:6px 14px;background:var(--surface)}
+
+  .rep-disclaimer{margin-top:28px;border-top:1px solid var(--border);padding-top:14px;font-size:12px;color:var(--ink-3);line-height:1.7}
+
+  footer.app-footer{border-top:1px solid var(--border);padding:22px 0;font-size:12.5px;color:var(--ink-3);text-align:center}
+
+  @media print{
+    body{background:#fff}
+    .no-print{display:none!important}
+    .report-paper{border:none;box-shadow:none;padding:0}
+    .print-only{display:block;font-size:11px;color:#64748b;border-bottom:1px solid #cbd5e1;padding-bottom:8px;margin-bottom:18px}
+    .risk-row,.alert-item,.rec-group ol li{break-inside:avoid}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    @page{margin:16mm}
+  }
+
+  @media (max-width:760px){
+    .score-hero{grid-template-columns:1fr;text-align:center}
+    .risk-row{grid-template-columns:1fr 1fr;gap:10px}
+    .risk-row .bar{grid-column:1/-1;order:-1}
+    .report-paper{padding:28px 22px}
+    .rep-head{flex-direction:column}
+    .rep-meta{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header no-print">
+  <div class="container header-inner">
+    <a href="index.html" class="brand" aria-label="Retour à l'accueil">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5.5v5.1c0 4.6 3.4 8.9 8 10.4 4.6-1.5 8-5.8 8-10.4V5.5L12 2z"/><path d="m9 12 2 2 4-4.5"/></svg>
+      </span>
+      <span>
+        <span class="brand-name">AI Visibility <span>Audit</span></span><br>
+        <span class="brand-sub">Exemple de rapport</span>
+      </span>
+    </a>
+    <div class="header-note"><strong>Exemple anonymisé</strong> — document fictif à titre d'illustration</div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="example-banner no-print">
+    <strong>Exemple de rapport d'alerte — données anonymisées.</strong> Ce document est un exemple fictif destiné à illustrer le contenu d'un rapport généré par le questionnaire. Toutes les organisations, personnes et données mentionnées sont inventées. L'audit réel est <a href="questionnaire.html" style="font-weight:700">gratuit et immédiat →</a>
+  </div>
+
+  <div class="report-toolbar no-print">
+    <button type="button" class="btn btn-primary btn-lg" onclick="window.print()">🖨 Imprimer / enregistrer en PDF</button>
+    <a href="questionnaire.html" class="btn btn-secondary btn-lg">Générer mon rapport gratuit</a>
+    <a href="index.html" class="btn btn-secondary btn-lg">Retour à l'accueil</a>
+  </div>
+
+  <article class="report-paper">
+    <div class="print-only">AI Visibility Audit — Exemple de rapport d'alerte (document fictif, anonymisé). Généré à titre d'illustration.</div>
+
+    <div class="rep-head">
+      <div>
+        <div class="rep-brand">Rapport d'alerte — Audit de visibilité IA</div>
+        <div class="rep-org">Cabinet médical pluridisciplinaire <span style="font-weight:500;color:#64748b">(anonymisé)</span></div>
+      </div>
+      <div class="rep-meta">
+        <strong>Date :</strong> 15 août 2026<br>
+        <strong>Secteur :</strong> Santé<br>
+        <strong>Fonction du répondant :</strong> Directrice d'exploitation<br>
+        <strong>Méthode :</strong> questionnaire de 20 questions, calcul local
+      </div>
+    </div>
+
+    <!-- Score global -->
+    <div class="score-hero">
+      <div class="score-big">
+        <div class="num" style="color:#ea580c">64<span class="den">/100</span></div>
+        <div class="lvl" style="background:#ea580c">Risque ÉLEVÉ</div>
+      </div>
+      <div class="score-info">
+        <div class="t">Score global de risque</div>
+        <div class="d">Moyenne des 6 catégories d'audit. Plus le score est élevé, plus l'exposition de l'organisation est importante. Un score de 0 à 24 indique un niveau faible, 25 à 49 modéré, 50 à 74 élevé, 75 à 100 critique.</div>
+        <div class="score-bar"><i style="width:64%;background:#ea580c"></i></div>
+        <div class="score-ticks"><span>0 — Faible</span><span>50 — Élevé</span><span>100 — Critique</span></div>
+      </div>
+    </div>
+
+    <!-- 1. Synthèse -->
+    <h2 class="rep-h2">1. Synthèse exécutive</h2>
+    <p class="rep-p">Sur la base des 20 réponses fournies le 15 août 2026, l'organisation présente un profil de risque <strong>élevé</strong> avec un score global de <strong>64/100</strong>. Les données de santé sont des données sensibles (art. 9 RGPD) soumises à des exigences renforcées, dont le référentiel HDS pour tout hébergement.</p>
+    <p class="rep-p"><strong>Points de vigilance prioritaires :</strong></p>
+    <ul style="margin:0 0 14px 20px;display:grid;gap:8px">
+      <li style="font-size:14px;color:#334155">Des données de santé (dossiers, diagnostics, numéros de sécurité sociale) sont saisies dans des outils d'IA non validés, dont des versions gratuites.</li>
+      <li style="font-size:14px;color:#334155">Les usages reposent en partie sur des comptes personnels : l'organisation ne contrôle ni les données, ni la suppression des conversations.</li>
+      <li style="font-size:14px;color:#334155">Le registre des traitements n'intègre pas les outils d'IA et aucune information dédiée n'est fournie aux patients.</li>
+    </ul>
+    <p class="rep-p">Ce rapport d'alerte est un <strong>diagnostic automatique</strong> établi à partir des déclarations du répondant. Il ne constitue ni une certification, ni un audit complet : il identifie les zones à traiter en priorité et prépare la démarche de mise en conformité.</p>
+
+    <!-- 2. Inventaire -->
+    <h2 class="rep-h2">2. Inventaire des usages déclarés</h2>
+    <p class="rep-p" style="margin-bottom:12px">Inventaire reconstitué à partir des réponses. Il est déclaratif : il reflète ce qui a été déclaré, pas nécessairement l'intégralité des usages réels.</p>
+    <table class="rep-table">
+      <tbody>
+        <tr><th style="width:38%">Outils d'IA déclarés</th><td>ChatGPT (compte personnel, version gratuite) — 9 utilisateurs · Microsoft Copilot (Microsoft 365) — 12 utilisateurs · NotebookLM — 3 utilisateurs · Otter.ai (transcription) — 2 utilisatrices · DeepSeek — 1 utilisateur (usage récent signalé)</td></tr>
+        <tr><th>Proportion d'utilisateurs</th><td>Entre 10 % et 50 % des collaborateurs</td></tr>
+        <tr><th>Services concernés</th><td>Secrétariat · Services de soins · Comptabilité · Direction</td></tr>
+        <tr><th>Finalités principales</th><td>Rédaction de comptes rendus et courriers · Synthèses de dossiers · Transcription de réunions · Recherche documentaire</td></tr>
+        <tr><th>Types de données saisies</th><td>Initiales et coordonnées de patients · Plannings · Numéros de sécurité sociale (occasionnel) · Données d'encaissement</td></tr>
+        <tr><th>Type de comptes</th><td>Mélange de comptes professionnels et personnels</td></tr>
+        <tr><th>Conservation des échanges</th><td>Postes des collaborateurs et comptes personnels, sans contrôle central</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 3. Risques par catégorie -->
+    <h2 class="rep-h2">3. Niveaux de risque par catégorie</h2>
+    <div class="risk-rows">
+      <div class="risk-row"><div class="name">Inventaire des usages</div><div class="bar"><i style="width:68%;background:#ea580c"></i></div><div class="pct">68/100</div><div class="lvl" style="background:#ea580c">Élevé</div></div>
+      <div class="risk-row"><div class="name">Données traitées</div><div class="bar"><i style="width:71%;background:#ea580c"></i></div><div class="pct">71/100</div><div class="lvl" style="background:#ea580c">Élevé</div></div>
+      <div class="risk-row"><div class="name">Accès &amp; circulation</div><div class="bar"><i style="width:78%;background:#dc2626"></i></div><div class="pct">78/100</div><div class="lvl" style="background:#dc2626">Critique</div></div>
+      <div class="risk-row"><div class="name">Stockage &amp; traitement</div><div class="bar"><i style="width:55%;background:#ea580c"></i></div><div class="pct">55/100</div><div class="lvl" style="background:#ea580c">Élevé</div></div>
+      <div class="risk-row"><div class="name">Consentement &amp; conformité</div><div class="bar"><i style="width:62%;background:#ea580c"></i></div><div class="pct">62/100</div><div class="lvl" style="background:#ea580c">Élevé</div></div>
+      <div class="risk-row"><div class="name">Formation &amp; gouvernance</div><div class="bar"><i style="width:46%;background:#d97706"></i></div><div class="pct">46/100</div><div class="lvl" style="background:#d97706">Modéré</div></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#16a34a"></i>0–24 Faible</span>
+      <span><i style="background:#d97706"></i>25–49 Modéré</span>
+      <span><i style="background:#ea580c"></i>50–74 Élevé</span>
+      <span><i style="background:#dc2626"></i>75–100 Critique</span>
+    </div>
+    <p class="rep-p" style="margin-top:14px"><strong>Lecture :</strong></p>
+    <ul style="margin:0 0 0 20px;display:grid;gap:8px">
+      <li style="font-size:14px;color:#334155"><strong>Inventaire des usages (68/100 — Élevé) :</strong> cinq outils d'IA sont en usage, dont au moins deux versions gratuites ; la cartographie interne n'existe pas.</li>
+      <li style="font-size:14px;color:#334155"><strong>Données traitées (71/100 — Élevé) :</strong> des données de santé et des données identifiantes de patients circulent dans les outils, sans anonymisation systématique.</li>
+      <li style="font-size:14px;color:#334155"><strong>Accès &amp; circulation (78/100 — Critique) :</strong> comptes personnels, version gratuite avec entraînement des modèles, aucune garantie d'hébergement dans l'UE.</li>
+      <li style="font-size:14px;color:#334155"><strong>Stockage &amp; traitement (55/100 — Élevé) :</strong> historiques conservés sur les postes et comptes personnels ; contenus générés rarement vérifiés.</li>
+      <li style="font-size:14px;color:#334155"><strong>Consentement &amp; conformité (62/100 — Élevé) :</strong> registre des traitements non à jour, information des patients absente, DPO non désigné.</li>
+      <li style="font-size:14px;color:#334155"><strong>Formation &amp; gouvernance (46/100 — Modéré) :</strong> charte en cours de rédaction, sensibilisation ponctuelle insuffisante.</li>
+    </ul>
+
+    <!-- 4. Alertes -->
+    <h2 class="rep-h2">4. Alertes détaillées</h2>
+    <div class="alert-item critique">
+      <span class="chip" style="background:#dc2626">Critique</span>
+      <div class="txt"><strong>Des données de santé sont saisies dans des outils d'IA : les données de santé sont des données sensibles (art. 9 RGPD) soumises à des obligations renforcées, dont le référentiel HDS pour l'hébergement.</strong>Données traitées — « Des données hautement sensibles (données de santé, coordonnées bancaires, pièces confidentielles) sont-elles saisies ? »</div>
+    </div>
+    <div class="alert-item critique">
+      <span class="chip" style="background:#dc2626">Critique</span>
+      <div class="txt"><strong>Des versions gratuites sont en usage : les données confidentielles peuvent être réutilisées pour l'entraînement des modèles, hors de tout contrôle.</strong>Accès &amp; circulation — « Des versions gratuites d'outils d'IA, dont les conversations peuvent servir à l'entraînement des modèles, sont-elles utilisées ? »</div>
+    </div>
+    <div class="alert-item eleve">
+      <span class="chip" style="background:#ea580c">Élevé</span>
+      <div class="txt"><strong>Les usages reposent sur des comptes personnels : l'organisation ne contrôle ni les données, ni les conditions d'utilisation, ni la suppression des conversations.</strong>Accès &amp; circulation — « Ces outils sont-ils utilisés avec des comptes professionnels ou personnels ? »</div>
+    </div>
+    <div class="alert-item eleve">
+      <span class="chip" style="background:#ea580c">Élevé</span>
+      <div class="txt"><strong>Le registre des traitements n'intègre pas les outils d'IA : l'organisation ne peut pas démontrer la conformité de ses traitements.</strong>Consentement &amp; conformité — « Votre registre des traitements (RGPD, art. 30) intègre-t-il les outils d'IA utilisés ? »</div>
+    </div>
+    <div class="alert-item eleve">
+      <span class="chip" style="background:#ea580c">Élevé</span>
+      <div class="txt"><strong>Les personnes concernées ne sont pas informées des traitements par IA : le droit à l'information (art. 13/14 RGPD) n'est pas respecté.</strong>Consentement &amp; conformité — « Les personnes concernées sont-elles informées que leurs données peuvent être traitées via des outils d'IA ? »</div>
+    </div>
+    <div class="alert-item moderate">
+      <span class="chip" style="background:#d97706">Modéré</span>
+      <div class="txt"><strong>Les échanges sont conservés dans des comptes personnels : l'organisation ne peut ni les auditer, ni les retirer, ni garantir leur suppression en cas de départ.</strong>Stockage &amp; traitement — « Où sont conservés les échanges avec les outils d'IA ? »</div>
+    </div>
+
+    <!-- 5. Recommandations -->
+    <h2 class="rep-h2">5. Recommandations priorisées</h2>
+
+    <div class="rec-group p1">
+      <div class="g-title"><span class="tag">P1</span>Priorité 1 — Actions critiques (sous 30 jours)</div>
+      <ol>
+        <li>Interdisez immédiatement la saisie de données de santé dans tout outil non validé et non hébergé conformément au référentiel HDS.</li>
+        <li>Conformez tout traitement de données de santé aux exigences du référentiel HDS : hébergement agréé, contrats de sous-traitance, journalisation.</li>
+        <li>Interdisez formellement la saisie d'identifiants patients (nom, date de naissance, n° de sécurité sociale) dans tout outil d'IA non validé.</li>
+        <li>Remplacez les versions gratuites par des offres professionnelles interdisant l'entraînement, ou interdisez la saisie de données réelles dans les versions gratuites.</li>
+        <li>Basculez les usages vers des comptes professionnels nominatifs sous contrat avec l'éditeur (clause de non-entraînement, support, DPA).</li>
+      </ol>
+    </div>
+
+    <div class="rec-group p2">
+      <div class="g-title"><span class="tag">P2</span>Priorité 2 — Actions importantes (sous 90 jours)</div>
+      <ol>
+        <li>Mettez le volet IA en conformité documentaire : registre des traitements à jour, information des personnes concernées, DPO ou référent identifié.</li>
+        <li>Rédigez une information spécifique sur l'usage de l'IA (quels outils, quelles données, quels droits) et intégrez-la aux documents d'accueil des patients.</li>
+        <li>Instaurez une règle de double vérification humaine obligatoire avant toute diffusion d'un contenu généré par IA.</li>
+        <li>Vérifiez que l'information des patients mentionne explicitement l'usage d'outils d'IA et le droit d'opposition.</li>
+      </ol>
+    </div>
+
+    <div class="rec-group p3">
+      <div class="g-title"><span class="tag">P3</span>Priorité 3 — Bonnes pratiques (à planifier)</div>
+      <ol>
+        <li>Adoptez une charte d'utilisation de l'IA et formez l'ensemble du personnel aux risques (confidentialité, données sensibles, hallucinations).</li>
+        <li>Reconduisez cet audit au moins une fois par an : les outils d'IA évoluent plus vite que les politiques internes.</li>
+        <li>Mettez en place un canal de signalement simple (interne) pour tout usage d'IA douteux ou tout incident de données.</li>
+      </ol>
+    </div>
+
+    <!-- 6. Prochaines étapes -->
+    <h2 class="rep-h2">6. Prochaines étapes</h2>
+    <div class="next-steps">
+      <h3>Donner une suite à ce rapport</h3>
+      <p>Ce rapport d'alerte identifie les zones de risque. Pour passer à l'action, trois options : approfondir avec un expert, engager la mise en conformité, ou sécuriser dans la durée.</p>
+      <div class="prices">
+        <span>Audit de démarrage — 0 € (ce rapport)</span>
+        <span>Rapport complet — 149 € TTC</span>
+        <span>Audit annuel + lettre de conformité — 299 € TTC / an</span>
+      </div>
+      <p style="margin-bottom:0">Conservez ce rapport : il documente votre démarche de diligence. Pour un accompagnement, utilisez le formulaire de contact sur la page d'accueil.</p>
+    </div>
+
+    <div class="rep-disclaimer">
+      Rapport d'alerte généré automatiquement par AI Visibility Audit à partir des réponses au questionnaire (20 questions), calculé localement dans le navigateur. Ce document est un outil de diagnostic déclaratif : il ne constitue pas un audit complet, ni un avis juridique, ni une certification. Il ne remplace pas l'analyse d'un délégué à la protection des données, d'un avocat ou d'un auditeur spécialisé. Les recommandations doivent être adaptées au contexte de l'organisation. <strong>Exemple anonymisé — toutes les données de ce document sont fictives.</strong>
+    </div>
+  </article>
+</main>
+
+<footer class="app-footer no-print">
+  AI Visibility Audit — Exemple de rapport d'alerte (données fictives, anonymisées). Générer votre propre rapport : <a href="questionnaire.html">audit gratuit en 15 minutes →</a>
+</footer>
+
+</body>
+</html>

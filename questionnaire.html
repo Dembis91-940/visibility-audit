@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire d'audit — AI Visibility Audit | 20 questions, rapport immédiat</title>
+<meta name="description" content="Questionnaire d'audit de visibilité des usages d'IA : 20 questions sur les outils, les données, les accès et la gouvernance. Rapport d'alerte généré instantanément dans votre navigateur.">
+<style>
+  :root{
+    --bg:#f8fafc;
+    --surface:#ffffff;
+    --ink:#0f172a;
+    --ink-2:#334155;
+    --ink-3:#64748b;
+    --blue:#1d4ed8;
+    --blue-hover:#1e40af;
+    --blue-50:#eff6ff;
+    --blue-100:#dbeafe;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --steel:#475569;
+    --ok:#16a34a;
+    --modere:#d97706;
+    --eleve:#ea580c;
+    --critique:#dc2626;
+    --radius:8px;
+    --shadow:0 1px 2px rgba(15,23,42,.06);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .container{max-width:920px;margin:0 auto;padding:0 24px}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ===== Header ===== */
+  header.app-header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 0}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand-mark{width:34px;height:34px;flex:0 0 34px;border:1.5px solid var(--blue);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;background:var(--blue-50)}
+  .brand-name{font-size:15.5px;font-weight:700;line-height:1.2}
+  .brand-name span{color:var(--blue)}
+  .brand-sub{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+  .header-note{font-size:13px;color:var(--ink-3)}
+  .header-note strong{color:var(--ok)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;border-radius:var(--radius);padding:11px 20px;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s;text-decoration:none!important;line-height:1.3;font-family:inherit}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-primary:hover{background:var(--blue-hover)}
+  .btn-secondary{background:var(--surface);color:var(--blue);border-color:var(--border-strong)}
+  .btn-secondary:hover{border-color:var(--blue);background:var(--blue-50)}
+  .btn-lg{padding:14px 26px;font-size:16px}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+
+  /* ===== Écrans ===== */
+  .screen{display:none;padding:36px 0 64px}
+  .screen.active{display:block}
+
+  /* ===== Intro ===== */
+  .intro-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px;max-width:760px;margin:0 auto}
+  .intro-card h1{font-size:26px;font-weight:800;letter-spacing:-.015em;margin-bottom:10px}
+  .intro-card .lead{color:var(--ink-2);font-size:15.5px;margin-bottom:22px}
+  .intro-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+  .intro-step{border:1px solid var(--border);border-radius:var(--radius);padding:14px;background:var(--bg)}
+  .intro-step .n{font-size:11.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+  .intro-step p{font-size:13px;color:var(--ink-2)}
+  .intro-note{background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius);padding:12px 16px;font-size:13.5px;color:var(--steel);margin-bottom:24px}
+  .intro-note strong{color:var(--blue)}
+  .form-row{margin-bottom:18px}
+  .form-row label{display:block;font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .form-row input[type=text],.form-row select{width:100%;padding:11px 13px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:inherit;font-size:15px;color:var(--ink);background:var(--surface)}
+  .form-row input:focus,.form-row select:focus{outline:2px solid var(--blue);outline-offset:-1px;border-color:var(--blue)}
+  .form-row .hint{font-size:12.5px;color:var(--ink-3);margin-top:5px}
+
+  /* ===== Formulaire ===== */
+  .progress-wrap{position:sticky;top:58px;z-index:40;background:var(--bg);padding:14px 0 10px;border-bottom:1px solid var(--border)}
+  .progress-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:8px}
+  .progress-top .count{font-size:13px;font-weight:600;color:var(--steel)}
+  .progress-top .pct{font-size:13px;font-weight:700;color:var(--blue)}
+  .progress-bar{height:8px;background:var(--border);border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--blue);border-radius:999px;width:0%;transition:width .25s ease}
+  .step-tabs{display:flex;gap:8px;margin:14px 0 4px;flex-wrap:wrap}
+  .step-tab{font-size:12.5px;font-weight:600;color:var(--ink-3);border:1px solid var(--border);border-radius:999px;padding:5px 12px;background:var(--surface);cursor:default}
+  .step-tab.done{color:var(--ok);border-color:#bbf7d0;background:#f0fdf4}
+  .step-tab.current{color:#fff;background:var(--blue);border-color:var(--blue)}
+
+  .step-panel{display:none}
+  .step-panel.active{display:block}
+  .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;margin-bottom:18px}
+  .q-card.incomplete{border-color:var(--critique);box-shadow:0 0 0 1px var(--critique)}
+  .q-cat{font-size:11.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+  .q-title{font-size:16.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .q-help{font-size:13.5px;color:var(--ink-3);margin-bottom:16px}
+  .q-options{display:grid;gap:8px}
+  .q-option{position:relative;display:flex;align-items:flex-start;gap:11px;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;background:var(--surface);cursor:pointer;transition:border-color .12s,background .12s}
+  .q-option:hover{border-color:var(--border-strong)}
+  .q-option input{position:absolute;opacity:0;pointer-events:none}
+  .q-option .box{width:19px;height:19px;flex:0 0 19px;border:1.5px solid var(--border-strong);border-radius:5px;background:var(--surface);margin-top:2px;display:flex;align-items:center;justify-content:center}
+  .q-option input[type=radio] ~ .box{border-radius:50%}
+  .q-option input:checked ~ .box{background:var(--blue);border-color:var(--blue)}
+  .q-option input:checked ~ .box::after{content:"";width:9px;height:9px;border-radius:2px;background:#fff}
+  .q-option input[type=radio]:checked ~ .box::after{border-radius:50%}
+  .q-option input:focus-visible ~ .box{outline:2px solid var(--blue);outline-offset:2px}
+  .q-option input:checked ~ .lbl{font-weight:600;color:var(--ink)}
+  .q-option.selected{border-color:var(--blue);background:var(--blue-50)}
+  .q-option .lbl{font-size:14.5px;color:var(--ink-2)}
+  .q-option .lbl small{display:block;font-size:12.5px;color:var(--ink-3);font-weight:400;margin-top:1px}
+
+  .step-nav{display:flex;justify-content:space-between;gap:14px;margin-top:26px}
+  .form-error{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:var(--radius);padding:12px 16px;font-size:14px;font-weight:600;margin-bottom:16px;display:none}
+  .form-error.show{display:block}
+
+  /* ===== Rapport ===== */
+  .report-toolbar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:26px}
+  .report-paper{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:44px 48px}
+  .print-only{display:none}
+  .rep-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:24px}
+  .rep-brand{font-size:13px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.09em}
+  .rep-org{font-size:19px;font-weight:800;color:var(--ink);margin-top:4px}
+  .rep-meta{font-size:12.5px;color:var(--ink-3);text-align:right;line-height:1.7}
+  .rep-meta strong{color:var(--steel);font-weight:600}
+
+  .score-hero{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:30px}
+  .score-big{text-align:center}
+  .score-big .num{font-size:52px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .score-big .den{font-size:15px;color:var(--ink-3);font-weight:600}
+  .score-big .lvl{display:inline-block;margin-top:8px;font-size:13px;font-weight:800;color:#fff;border-radius:999px;padding:5px 14px;letter-spacing:.02em}
+  .score-info .t{font-size:15px;font-weight:700;margin-bottom:6px}
+  .score-info .d{font-size:14px;color:var(--ink-2)}
+  .score-bar{height:9px;background:var(--border);border-radius:999px;margin-top:12px;overflow:hidden;position:relative}
+  .score-bar i{position:absolute;top:0;bottom:0;left:0;background:var(--blue);border-radius:999px}
+  .score-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:5px}
+
+  .rep-h2{font-size:16px;font-weight:800;color:var(--ink);border-left:4px solid var(--blue);padding-left:12px;margin:34px 0 16px}
+  .rep-p{font-size:14.5px;color:var(--ink-2);margin-bottom:12px}
+  .rep-p strong{color:var(--ink)}
+
+  table.rep-table{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:6px}
+  table.rep-table th{background:var(--bg);color:var(--steel);font-weight:700;text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+  table.rep-table th,table.rep-table td{border:1px solid var(--border);padding:10px 13px;vertical-align:top}
+  table.rep-table td{color:var(--ink-2)}
+  table.rep-table tr:nth-child(even) td{background:#fcfdff}
+
+  .risk-rows{display:grid;gap:10px}
+  .risk-row{border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;display:grid;grid-template-columns:200px 1fr 74px 96px;gap:16px;align-items:center}
+  .risk-row .name{font-size:14px;font-weight:700;color:var(--ink)}
+  .risk-row .bar{height:10px;background:var(--bg);border:1px solid var(--border);border-radius:999px;overflow:hidden}
+  .risk-row .bar i{display:block;height:100%;border-radius:999px}
+  .risk-row .pct{font-size:14px;font-weight:700;color:var(--steel);text-align:right}
+  .risk-row .lvl{font-size:12px;font-weight:800;color:#fff;border-radius:999px;padding:4px 10px;text-align:center;letter-spacing:.02em}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .legend span{font-size:12px;font-weight:600;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:4px 11px;background:var(--bg)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+
+  .alert-item{display:flex;gap:13px;border:1px solid var(--border);border-left:4px solid var(--border-strong);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;background:var(--surface)}
+  .alert-item.critique{border-left-color:var(--critique)}
+  .alert-item.eleve{border-left-color:var(--eleve)}
+  .alert-item.moderate{border-left-color:var(--modere)}
+  .alert-item .chip{flex:0 0 auto;font-size:11px;font-weight:800;color:#fff;border-radius:4px;padding:3px 9px;height:fit-content;letter-spacing:.03em}
+  .alert-item .txt{font-size:14px;color:var(--ink-2)}
+  .alert-item .txt strong{color:var(--ink);display:block;margin-bottom:2px}
+
+  .rec-group{margin-bottom:20px}
+  .rec-group .g-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;margin-bottom:10px;padding:8px 14px;border-radius:var(--radius)}
+  .rec-group.p1 .g-title{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+  .rec-group.p2 .g-title{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+  .rec-group.p3 .g-title{background:var(--blue-50);border:1px solid var(--blue-100);color:var(--blue-hover)}
+  .rec-group .g-title .tag{font-size:11px;font-weight:800;border-radius:4px;padding:2px 8px;color:#fff;letter-spacing:.04em}
+  .rec-group.p1 .tag{background:#b91c1c}
+  .rec-group.p2 .tag{background:#d97706}
+  .rec-group.p3 .tag{background:var(--blue)}
+  .rec-group ol{list-style:none;display:grid;gap:9px}
+  .rec-group ol li{display:flex;gap:10px;font-size:14px;color:var(--ink-2);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px}
+  .rec-group ol li::before{content:"";flex:0 0 8px;width:8px;height:8px;border-radius:50%;margin-top:7px;background:currentColor}
+  .rec-group.p1 ol li::before{background:#b91c1c}
+  .rec-group.p2 ol li::before{background:#d97706}
+  .rec-group.p3 ol li::before{background:var(--blue)}
+
+  .next-steps{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-top:8px}
+  .next-steps h3{font-size:15px;font-weight:800;margin-bottom:10px;color:var(--ink)}
+  .next-steps p{font-size:14px;color:var(--ink-2);margin-bottom:12px}
+  .next-steps .prices{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .next-steps .prices span{font-size:13px;font-weight:700;color:var(--steel);border:1px solid var(--border-strong);border-radius:999px;padding:6px 14px;background:var(--surface)}
+
+  .rep-disclaimer{margin-top:28px;border-top:1px solid var(--border);padding-top:14px;font-size:12px;color:var(--ink-3);line-height:1.7}
+
+  footer.app-footer{border-top:1px solid var(--border);padding:22px 0;font-size:12.5px;color:var(--ink-3);text-align:center}
+
+  /* ===== Impression ===== */
+  @media print{
+    body{background:#fff}
+    .no-print{display:none!important}
+    .screen{display:none!important}
+    #screen-report{display:block!important;padding:0}
+    .report-paper{border:none;box-shadow:none;padding:0}
+    .print-only{display:block;font-size:11px;color:#64748b;border-bottom:1px solid #cbd5e1;padding-bottom:8px;margin-bottom:18px}
+    .risk-row{break-inside:avoid}
+    .alert-item{break-inside:avoid}
+    .rec-group ol li{break-inside:avoid}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    @page{margin:16mm}
+  }
+
+  @media (max-width:760px){
+    .intro-steps{grid-template-columns:1fr}
+    .score-hero{grid-template-columns:1fr;text-align:center}
+    .risk-row{grid-template-columns:1fr 1fr;gap:10px}
+    .risk-row .bar{grid-column:1/-1;order:-1}
+    .report-paper{padding:28px 22px}
+    .rep-head{flex-direction:column}
+    .rep-meta{text-align:left}
+    .step-tabs{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header no-print">
+  <div class="container header-inner">
+    <a href="index.html" class="brand" aria-label="Retour à l'accueil">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5.5v5.1c0 4.6 3.4 8.9 8 10.4 4.6-1.5 8-5.8 8-10.4V5.5L12 2z"/><path d="m9 12 2 2 4-4.5"/></svg>
+      </span>
+      <span>
+        <span class="brand-name">AI Visibility <span>Audit</span></span><br>
+        <span class="brand-sub">Questionnaire d'audit</span>
+      </span>
+    </a>
+    <div class="header-note"><strong>Confidentiel</strong> — vos réponses restent dans votre navigateur</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ============ ÉCRAN 1 : INTRODUCTION ============ -->
+  <section class="screen active" id="screen-intro">
+    <div class="intro-card">
+      <div class="q-cat" style="color:#1d4ed8">Audit de démarrage — gratuit</div>
+      <h1>Cartographiez vos usages de l'IA en 15 minutes</h1>
+      <p class="lead">20 questions organisées en 6 catégories : inventaire des outils, données traitées, accès, stockage, conformité et formation. À la fin, un <strong>rapport d'alerte complet</strong> est généré immédiatement à l'écran, avec score global, niveaux de risque et recommandations.</p>
+      <div class="intro-steps">
+        <div class="intro-step">
+          <div class="n">Étape 1</div>
+          <p>Vous répondez aux 20 questions, en toute franchise. « Je ne sais pas » est une réponse acceptée — et signalée.</p>
+        </div>
+        <div class="intro-step">
+          <div class="n">Étape 2</div>
+          <p>Le rapport d'alerte est calculé localement : inventaire, 6 catégories de risque sur 4 niveaux, alertes, recommandations P1/P2/P3.</p>
+        </div>
+        <div class="intro-step">
+          <div class="n">Étape 3</div>
+          <p>Vous imprimez ou enregistrez le rapport en PDF. Il servira de base à votre plan d'action — et à nos échanges si vous le souhaitez.</p>
+        </div>
+      </div>
+      <div class="intro-note">
+        <strong>Confidentialité absolue :</strong> ce questionnaire s'exécute entièrement dans votre navigateur. Vos réponses ne sont ni stockées sur un serveur, ni transmises, ni consultées. Le rapport est généré chez vous, sur votre poste. Vous pouvez tout effacer d'un clic.
+      </div>
+      <div class="form-row">
+        <label for="f-org">Nom de votre organisation <span style="font-weight:400;color:#64748b">(facultatif — apparaîtra sur le rapport)</span></label>
+        <input type="text" id="f-org" placeholder="Ex. : Cabinet médical des Ternes, Étude Durand & Associés…" autocomplete="organization">
+      </div>
+      <div class="form-row">
+        <label for="f-secteur">Secteur d'activité *</label>
+        <select id="f-secteur" required>
+          <option value="">— Choisissez votre secteur —</option>
+          <option value="sante">Santé (établissement de santé, cabinet médical ou paramédical, laboratoire, EHPAD)</option>
+          <option value="finance">Finance (banque, assurance, expert-comptable, conseil en investissement)</option>
+          <option value="juridique">Juridique (cabinet d'avocats, notaire, huissier, service juridique d'entreprise)</option>
+          <option value="autre">Autre secteur</option>
+        </select>
+        <div class="hint">Le secteur adapte automatiquement les recommandations du rapport.</div>
+      </div>
+      <div class="form-row">
+        <label for="f-role">Votre fonction <span style="font-weight:400;color:#64748b">(facultatif)</span></label>
+        <input type="text" id="f-role" placeholder="Ex. : Directrice générale, responsable conformité, DPO…" autocomplete="organization-title">
+      </div>
+      <button type="button" class="btn btn-primary btn-lg" id="btn-start" style="width:100%">Commencer le questionnaire →</button>
+      <p style="font-size:12.5px;color:#64748b;margin-top:12px;text-align:center">20 questions · environ 15 minutes · aucune inscription requise</p>
+    </div>
+  </section>
+
+  <!-- ============ ÉCRAN 2 : FORMULAIRE ============ -->
+  <section class="screen" id="screen-form">
+    <div class="progress-wrap no-print">
+      <div class="container" style="padding:0">
+        <div class="progress-top">
+          <span class="count" id="progress-count">0 / 20 questions renseignées</span>
+          <span class="pct" id="progress-pct">0 %</span>
+        </div>
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-fill-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="step-tabs" id="step-tabs"></div>
+      </div>
+    </div>
+
+    <div class="form-error no-print" id="form-error"></div>
+    <form id="audit-form" novalidate>
+      <div id="steps-container"></div>
+      <div class="step-nav no-print">
+        <button type="button" class="btn btn-secondary" id="btn-prev">← Précédent</button>
+        <button type="button" class="btn btn-primary" id="btn-next">Suivant →</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ ÉCRAN 3 : RAPPORT ============ -->
+  <section class="screen" id="screen-report">
+    <div class="report-toolbar no-print">
+      <button type="button" class="btn btn-primary btn-lg" id="btn-print">🖨 Imprimer / enregistrer en PDF</button>
+      <a href="questionnaire.html" class="btn btn-secondary btn-lg">Recommencer l'audit</a>
+      <a href="index.html" class="btn btn-secondary btn-lg">Retour à l'accueil</a>
+    </div>
+    <div class="report-paper" id="report"></div>
+  </section>
+
+</main>
+
+<footer class="app-footer no-print">
+  AI Visibility Audit — Questionnaire d'audit de démarrage. Réponses traitées localement, jamais transmises.
+</footer>
+
+<script>
+'use strict';
+
+/* =====================================================================
+   DONNÉES : 20 QUESTIONS, 6 CATÉGORIES
+   score : contribution au risque (0 = aucun, 4 = maximal)
+   alert : texte d'alerte affiché dans le rapport si l'option est choisie
+   rec   : recommandation associée à l'option risquée
+===================================================================== */
+
+var CATEGORIES = {
+  inventaire:  { id: 'inventaire',  num: 1, label: 'Inventaire des usages',           short: 'Inventaire' },
+  donnees:     { id: 'donnees',     num: 2, label: 'Données traitées',               short: 'Données' },
+  acces:       { id: 'acces',       num: 3, label: 'Accès & circulation',            short: 'Accès' },
+  stockage:    { id: 'stockage',    num: 4, label: 'Stockage & traitement',          short: 'Stockage' },
+  conformite:  { id: 'conformite',  num: 5, label: 'Consentement & conformité',      short: 'Conformité' },
+  formation:   { id: 'formation',   num: 6, label: 'Formation & gouvernance',        short: 'Formation' }
+};
+
+var QUESTIONS = [
+  /* ---------- Catégorie 1 : Inventaire des usages ---------- */
+  {
+    id: 'q1', cat: 'inventaire', type: 'check', max: 17,
+    title: 'Quels outils d\u2019IA générative ou assistants IA sont utilisés au sein de votre organisation ?',
+    help: 'Cochez tous les outils réellement utilisés, y compris les versions gratuites et celles installées par les collaborateurs eux-mêmes.',
+    options: [
+      { v: 'chatgpt', label: 'ChatGPT (OpenAI)', score: 2, alert: 'ChatGPT figure parmi les outils déclarés : vérifiez la version (gratuite ou professionnelle) et les conditions d\u2019entraînement des modèles.' },
+      { v: 'copilot', label: 'Microsoft Copilot (bureau / Microsoft 365)', score: 1 },
+      { v: 'claude', label: 'Claude (Anthropic)', score: 2 },
+      { v: 'gemini', label: 'Gemini (Google)', score: 2 },
+      { v: 'lechat', label: 'Le Chat / Mistral', score: 1 },
+      { v: 'perplexity', label: 'Perplexity (recherche)', score: 2 },
+      { v: 'notebooklm', label: 'NotebookLM (synthèse de documents)', score: 2 },
+      { v: 'deepseek', label: 'DeepSeek', score: 3, alert: 'DeepSeek est déclaré : cet outil est hébergé hors de l\u2019Union européenne ; son utilisation sur des données confidentielles est fortement déconseillée.' },
+      { v: 'images', label: 'Générateurs d\u2019images (Midjourney, DALL·E, Canva AI…)', score: 1 },
+      { v: 'otter', label: 'Otter.ai ou autre transcription IA de réunions', score: 2, alert: 'Un outil de transcription IA est utilisé : les réunions peuvent contenir des données personnelles ou confidentielles ; vérifiez où sont stockés les enregistrements.' },
+      { v: 'autre', label: 'Autre outil d\u2019IA non listé', score: 2, alert: 'Un outil d\u2019IA non répertorié dans la liste est utilisé : toute la chaîne (éditeur, hébergement, conditions) reste à vérifier.' },
+      { v: 'aucun', label: 'Aucun outil d\u2019IA à ma connaissance', score: 0 }
+    ]
+  },
+  {
+    id: 'q2', cat: 'inventaire', type: 'radio', max: 4,
+    title: 'Quelle proportion de collaborateurs utilise ces outils au quotidien ?',
+    help: 'Si vous ne pouvez pas répondre avec certitude, c\u2019est déjà une information en soi.',
+    options: [
+      { v: 'personne', label: 'Personne — aucun usage actif', score: 0 },
+      { v: 'moins10', label: 'Moins de 10 % des collaborateurs', score: 1 },
+      { v: '10a50', label: 'Entre 10 % et 50 % des collaborateurs', score: 2 },
+      { v: 'plus50', label: 'Plus de 50 % des collaborateurs', score: 3, alert: 'L\u2019usage de l\u2019IA est répandu dans l\u2019organisation : le risque d\u2019incident croît avec le nombre d\u2019utilisateurs non encadrés.', rec: 'Mettez en place un contrôle des accès et une sensibilisation avant que l\u2019usage ne devienne généralisé.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019organisation ne connaît pas l\u2019ampleur de ses usages d\u2019IA : c\u2019est le signal le plus préoccupant de cette catégorie.', rec: 'Réalisez un sondage interne anonyme (30 secondes par collaborateur) pour cartographier les usages réels.' }
+    ]
+  },
+  {
+    id: 'q3', cat: 'inventaire', type: 'radio', max: 4,
+    title: 'Ces usages sont-ils recensés dans un registre, une cartographie ou une politique interne ?',
+    help: 'L\u2019article 30 du RGPD impose un registre des traitements ; les outils d\u2019IA y figurent rarement.',
+    options: [
+      { v: 'oui', label: 'Oui, une cartographie exhaustive et à jour existe', score: 0 },
+      { v: 'partiel', label: 'Partiellement (certains services ou certains outils seulement)', score: 2 },
+      { v: 'non', label: 'Non', score: 4, alert: 'Aucune cartographie des usages d\u2019IA : l\u2019organisation ne peut ni mesurer son exposition ni justifier sa diligence en cas de contrôle.', rec: 'Créez une cartographie des outils d\u2019IA (éditeur, version, comptes, finalités, services) et intégrez-la à votre registre des traitements RGPD.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019existence même d\u2019une cartographie est inconnue : la gouvernance des usages d\u2019IA n\u2019est pas démontrable.', rec: 'Vérifiez auprès de votre DPO ou service conformité si un registre existe ; sinon, lancez sa création.' }
+    ]
+  },
+  {
+    id: 'q4', cat: 'inventaire', type: 'check', max: 13,
+    title: 'Dans quels services ou équipes ces outils sont-ils utilisés ?',
+    help: 'Cochez tous les services concernés.',
+    options: [
+      { v: 'direction', label: 'Direction / administration', score: 1 },
+      { v: 'secretariat', label: 'Secrétariat / accueil / back-office', score: 1 },
+      { v: 'metier', label: 'Services opérationnels (métier principal)', score: 2 },
+      { v: 'commercial', label: 'Commercial / marketing', score: 1 },
+      { v: 'finance', label: 'Finance / comptabilité', score: 2 },
+      { v: 'juridique', label: 'Juridique / conformité', score: 2 },
+      { v: 'rh', label: 'Ressources humaines', score: 2 },
+      { v: 'it', label: 'Informatique / données', score: 1 },
+      { v: 'autre', label: 'Autre service', score: 1 }
+    ]
+  },
+  {
+    id: 'q5', cat: 'inventaire', type: 'check', max: 10,
+    title: 'Pour quelles finalités ces outils sont-ils principalement utilisés ?',
+    help: 'Cochez toutes les finalités constatées.',
+    options: [
+      { v: 'redaction', label: 'Rédaction (courriers, comptes rendus, synthèses)', score: 1 },
+      { v: 'recherche', label: 'Recherche documentaire / veille', score: 1 },
+      { v: 'analyse', label: 'Analyse de documents ou de données', score: 2 },
+      { v: 'transcription', label: 'Transcription de réunions ou d\u2019entretiens', score: 2 },
+      { v: 'contenus', label: 'Création de contenus ou de visuels', score: 1 },
+      { v: 'code', label: 'Développement informatique / code', score: 1 },
+      { v: 'traduction', label: 'Traduction', score: 1 },
+      { v: 'autre', label: 'Autre finalité', score: 1 }
+    ]
+  },
+
+  /* ---------- Catégorie 2 : Données traitées ---------- */
+  {
+    id: 'q6', cat: 'donnees', type: 'check', max: 22,
+    title: 'Quels types de données sont saisis dans ces outils d\u2019IA ?',
+    help: 'La nature des données détermine la criticité du traitement. Cochez tout ce qui peut arriver dans un prompt ou un document chargé.',
+    options: [
+      { v: 'identifiants', label: 'Données personnelles identifiantes (nom, coordonnées, numéros de dossier)', score: 2, alert: 'Des données personnelles identifiantes sont saisies dans des outils d\u2019IA : chaque saisie constitue un traitement de données à caractère personnel qui doit figurer dans votre registre.' },
+      { v: 'sante', label: 'Données de santé (diagnostics, traitements, dossiers médicaux)', score: 4, alert: 'CRITIQUE — Des données de santé sont saisies dans des outils d\u2019IA : les données de santé sont des données sensibles (art. 9 RGPD) soumises à des obligations renforcées, dont le référentiel HDS pour l\u2019hébergement.', rec: 'Interdisez immédiatement la saisie de données de santé dans tout outil non validé et non hébergé conformément au référentiel HDS.' },
+      { v: 'financieres', label: 'Données financières ou bancaires (RIB, IBAN, transactions)', score: 4, alert: 'CRITIQUE — Des données financières ou bancaires sont saisies : leur exposition expose l\u2019organisation à des risques de fraude, de sanctions ACPR et d\u2019obligations LCB-FT non respectées.', rec: 'Bloquez la saisie de coordonnées bancaires dans les assistants d\u2019IA et sécurisez les canaux de traitement des données financières.' },
+      { v: 'juridiques', label: 'Données juridiques confidentielles (pièces, contrats sensibles, procédures)', score: 4, alert: 'CRITIQUE — Des pièces ou données juridiques confidentielles sont saisies : le secret professionnel peut être compromis si l\u2019outil est accessible à des tiers ou réutilise les conversations.', rec: 'Établissez la liste des documents qui ne doivent jamais être chargés dans un outil d\u2019IA public, et formez le personnel en conséquence.' },
+      { v: 'rh', label: 'Données RH (bulletins de salaire, entretiens annuels, dossiers salariés)', score: 2, alert: 'Des données RH sont saisies : ces données sont sensibles et souvent soumises à des accords d\u2019entreprise ou à des informations préalables des représentants du personnel.' },
+      { v: 'commerciales', label: 'Données commerciales ou secrets industriels', score: 2, alert: 'Des données commerciales ou des secrets industriels sont saisis : leur fuite peut constituer un préjudice concurrentiel direct et un manquement à la confidentialité.' },
+      { v: 'aucune', label: 'Aucune donnée sensible — uniquement du contenu générique', score: 0 },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019organisation ignore quelles données circulent dans ses outils d\u2019IA : il est impossible de mesurer l\u2019exposition sans audit.', rec: 'Menez une revue rapide des conversations récentes (avec l\u2019accord des utilisateurs) pour qualifier les données réellement saisies.' }
+    ]
+  },
+  {
+    id: 'q7', cat: 'donnees', type: 'radio', max: 4,
+    title: 'Des données à caractère personnel identifiantes (nom, coordonnées, numéro de dossier) sont-elles saisies dans ces outils ?',
+    options: [
+      { v: 'jamais', label: 'Jamais', score: 0 },
+      { v: 'rarement', label: 'Rarement', score: 1 },
+      { v: 'regulierement', label: 'Régulièrement', score: 3, alert: 'La saisie régulière de données identifiantes transforme l\u2019usage de l\u2019outil en traitement de données à caractère personnel systématique, avec toutes les obligations RGPD associées.', rec: 'Imposez la pseudonymisation (initiales, numéro interne) et réduisez la saisie aux seules données strictement nécessaires (principe de minimisation).' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'Impossible de confirmer que les données identifiantes restent hors des outils : le risque est non maîtrisé.', rec: 'Interrogez les utilisateurs sur leurs pratiques de saisie et documentez la réponse.' }
+    ]
+  },
+  {
+    id: 'q8', cat: 'donnees', type: 'radio', max: 4,
+    title: 'Des données hautement sensibles (données de santé, coordonnées bancaires, pièces confidentielles) sont-elles saisies ?',
+    options: [
+      { v: 'jamais', label: 'Jamais', score: 0 },
+      { v: 'rarement', label: 'Rarement', score: 2 },
+      { v: 'regulierement', label: 'Régulièrement', score: 4, alert: 'CRITIQUE — La saisie régulière de données hautement sensibles dans des outils d\u2019IA constitue l\u2019exposition la plus grave que cet audit puisse détecter : elle combine risque de fuite, sanction réglementaire et atteinte au secret professionnel.', rec: 'Mettez en place une interdiction formelle écrite, des contrôles techniques (filtrage de contenu) et une procédure de signalement des manquements.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019organisation ne sait pas si des données hautement sensibles circulent dans ses outils d\u2019IA : cette incertitude doit être levée en priorité.', rec: 'Organisez une vérification ciblée avec les responsables de service avant toute déclaration de conformité.' }
+    ]
+  },
+  {
+    id: 'q9', cat: 'donnees', type: 'radio', max: 4,
+    title: 'Les données sont-elles anonymisées ou pseudonymisées avant d\u2019être saisies dans les outils ?',
+    help: 'L\u2019anonymisation est la mesure la plus efficace : sans donnée personnelle, il n\u2019y a plus de traitement RGPD.',
+    options: [
+      { v: 'systematique', label: 'Systématiquement', score: 0 },
+      { v: 'parfois', label: 'Parfois', score: 2 },
+      { v: 'jamais', label: 'Jamais', score: 4, alert: 'Les données sont saisies telles quelles, sans anonymisation : toute la sensibilité des données est exposée aux conditions de l\u2019outil.', rec: 'Formalisez des consignes d\u2019anonymisation (retirer noms, coordonnées, numéros) et vérifiez leur application sur des exemples concrets.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'Aucune garantie d\u2019anonymisation : le niveau d\u2019exposition réel des données reste inconnu.', rec: 'Documentez la pratique réelle des équipes avant de définir les consignes.' }
+    ]
+  },
+
+  /* ---------- Catégorie 3 : Accès & circulation ---------- */
+  {
+    id: 'q10', cat: 'acces', type: 'radio', max: 4,
+    title: 'Ces outils sont-ils utilisés avec des comptes professionnels ou personnels ?',
+    help: 'Un compte personnel échappe totalement au contrôle de l\u2019organisation.',
+    options: [
+      { v: 'pro', label: 'Comptes professionnels exclusivement', score: 0 },
+      { v: 'mixte', label: 'Mélange de comptes professionnels et personnels', score: 2 },
+      { v: 'perso', label: 'Comptes personnels principalement', score: 3, alert: 'Les usages reposent sur des comptes personnels : l\u2019organisation ne contrôle ni les données, ni les conditions d\u2019utilisation, ni la suppression des conversations.', rec: 'Basculez les usages vers des comptes professionnels nominatifs sous contrat avec l\u2019éditeur (clause de non-entraînement, support, DPA).' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'Le type de comptes utilisés est inconnu : aucun contrôle des accès n\u2019est possible en l\u2019état.', rec: 'Recensez les comptes (professionnels et personnels) utilisés par service afin de reprendre la main sur les accès.' }
+    ]
+  },
+  {
+    id: 'q11', cat: 'acces', type: 'radio', max: 4,
+    title: 'Des versions gratuites d\u2019outils d\u2019IA, dont les conversations peuvent servir à l\u2019entraînement des modèles, sont-elles utilisées ?',
+    help: 'Les offres gratuites « grand public » peuvent réutiliser vos conversations pour améliorer les modèles.',
+    options: [
+      { v: 'non', label: 'Non — offres professionnelles sans entraînement sur nos données', score: 0 },
+      { v: 'oui', label: 'Oui, des versions gratuites sont utilisées', score: 3, alert: 'Des versions gratuites sont en usage : vos données confidentielles peuvent être réutilisées pour l\u2019entraînement des modèles, hors de tout contrôle.', rec: 'Remplacez les versions gratuites par des offres professionnelles interdisant l\u2019entraînement, ou interdisez la saisie de données réelles dans les versions gratuites.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019organisation ignore si des versions gratuites sont utilisées : le risque de réutilisation des données par les éditeurs n\u2019est pas écarté.', rec: 'Vérifiez les licences et comptes en service auprès de chaque service utilisateur.' }
+    ]
+  },
+  {
+    id: 'q12', cat: 'acces', type: 'radio', max: 4,
+    title: 'Avez-vous la garantie que les données traitées restent hébergées dans l\u2019Union européenne ?',
+    help: 'Les transferts hors UE sont encadrés par le RGPD (chapitre V) et doivent être documentés.',
+    options: [
+      { v: 'oui', label: 'Oui — garantie contractuelle d\u2019hébergement dans l\u2019UE', score: 0 },
+      { v: 'non', label: 'Non / hébergement hors UE possible', score: 3, alert: 'Les données peuvent transiter ou être stockées hors de l\u2019Union européenne sans garantie contractuelle : les transferts ne sont pas conformes au chapitre V du RGPD.', rec: 'Exigez des éditeurs une localisation UE des données et documentez les clauses de transfert (clauses types) avant toute utilisation.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'La localisation des données est inconnue : aucun transfert n\u2019est maîtrisé.', rec: 'Demandez à chaque éditeur sa politique d\u2019hébergement par écrit et archivez les réponses.' }
+    ]
+  },
+
+  /* ---------- Catégorie 4 : Stockage & traitement ---------- */
+  {
+    id: 'q13', cat: 'stockage', type: 'radio', max: 4,
+    title: 'Où sont conservés les échanges avec les outils d\u2019IA (conversations, historiques, fichiers chargés) ?',
+    options: [
+      { v: 'espacepro', label: 'Dans un espace professionnel sécurisé de l\u2019organisation', score: 0 },
+      { v: 'postes', label: 'Sur les postes des collaborateurs, sans contrôle central', score: 2 },
+      { v: 'comptesperso', label: 'Dans les comptes personnels des collaborateurs', score: 3, alert: 'Les échanges sont conservés dans des comptes personnels : l\u2019organisation ne peut ni les auditer, ni les retirer, ni garantir leur suppression en cas de départ.', rec: 'Centralisez les échanges dans un espace professionnel contrôlé (avec conservation et destruction documentées).' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'La localisation des historiques est inconnue : aucune capacité d\u2019audit ni de réponse à une demande de droit d\u2019accès.', rec: 'Cartographiez où vivent les conversations (comptes, navigateurs, applications) et définissez une politique de conservation.' }
+    ]
+  },
+  {
+    id: 'q14', cat: 'stockage', type: 'radio', max: 4,
+    title: 'Les contenus générés par l\u2019IA (comptes rendus, synthèses, documents) sont-ils vérifiés avant utilisation ou diffusion ?',
+    help: 'Les modèles peuvent produire des affirmations fausses avec une grande assurance (hallucinations).',
+    options: [
+      { v: 'toujours', label: 'Toujours, par une personne compétente', score: 0 },
+      { v: 'souvent', label: 'Souvent', score: 1 },
+      { v: 'rarement', label: 'Rarement', score: 3, alert: 'Les contenus générés sont peu vérifiés : le risque d\u2019erreur professionnelle (diagnostic erroné, clause manquante, chiffre faux) se diffuse dans vos documents.', rec: 'Instaurez une règle de double vérification humaine obligatoire avant toute diffusion d\u2019un contenu généré par IA.' },
+      { v: 'jamais', label: 'Jamais / je ne sais pas', score: 4, alert: 'Aucune vérification des contenus générés : l\u2019organisation assume un risque d\u2019erreur non contrôlé dans ses documents officiels.', rec: 'Mettez en place une procédure de validation systématique et interdisez la diffusion directe de sorties d\u2019IA sans relecture.' }
+    ]
+  },
+  {
+    id: 'q15', cat: 'stockage', type: 'radio', max: 4,
+    title: 'Des documents confidentiels complets (dossiers, contrats, comptes rendus) sont-ils collés ou copiés intégralement dans ces outils ?',
+    options: [
+      { v: 'jamais', label: 'Jamais', score: 0 },
+      { v: 'parfois', label: 'Parfois', score: 2 },
+      { v: 'frequent', label: 'Fréquemment', score: 4, alert: 'CRITIQUE — Des documents confidentiels complets sont chargés dans les outils : la fuite d\u2019un seul document peut constituer une violation de données (72 h pour notifier la CNIL) et un préjudice irréversible.', rec: 'Interdisez le chargement de documents complets et imposez l\u2019usage d\u2019extraits anonymisés ; archivez les exceptions justifiées.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019organisation ignore si des documents complets sont chargés : l\u2019exposition maximale est possible sans qu\u2019elle en ait connaissance.', rec: 'Vérifiez les journaux d\u2019utilisation ou interrogez directement les équipes sur leurs pratiques.' }
+    ]
+  },
+
+  /* ---------- Catégorie 5 : Consentement & conformité ---------- */
+  {
+    id: 'q16', cat: 'conformite', type: 'radio', max: 4,
+    title: 'Les personnes concernées (patients, clients, salariés) sont-elles informées que leurs données peuvent être traitées via des outils d\u2019IA ?',
+    help: 'Le RGPD impose une information claire et spécifique sur les traitements (art. 13 et 14).',
+    options: [
+      { v: 'oui', label: 'Oui — information dédiée et spécifique à l\u2019IA', score: 0 },
+      { v: 'partiel', label: 'Partiellement (mentions générales seulement)', score: 2 },
+      { v: 'non', label: 'Non', score: 4, alert: 'Les personnes concernées ne sont pas informées des traitements par IA : le droit à l\u2019information (art. 13/14 RGPD) n\u2019est pas respecté.', rec: 'Rédigez une information spécifique sur l\u2019usage de l\u2019IA (quels outils, quelles données, quels droits) et intégrez-la à vos documents d\u2019accueil.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019information des personnes concernées n\u2019est pas démontrée : le fondement du traitement est fragile en cas de contrôle.', rec: 'Auditez vos mentions existantes et ajoutez une rubrique dédiée à l\u2019IA.' }
+    ]
+  },
+  {
+    id: 'q17', cat: 'conformite', type: 'radio', max: 4,
+    title: 'Votre registre des traitements (RGPD, art. 30) intègre-t-il les outils d\u2019IA utilisés ?',
+    options: [
+      { v: 'oui', label: 'Oui, il est à jour et intègre les outils d\u2019IA', score: 0 },
+      { v: 'encours', label: 'En cours de mise à jour', score: 2 },
+      { v: 'non', label: 'Non', score: 4, alert: 'Le registre des traitements n\u2019intègre pas les outils d\u2019IA : l\u2019organisation ne peut pas démontrer la conformité de ses traitements.', rec: 'Ajoutez chaque outil d\u2019IA comme traitement (finalités, données, destinataires, durées, garanties) dans votre registre.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019existence ou le contenu du registre est inconnu : la conformité documentaire est à reconstruire.', rec: 'Localisez le registre des traitements et faites vérifier par votre DPO la couverture des outils d\u2019IA.' }
+    ]
+  },
+  {
+    id: 'q18', cat: 'conformite', type: 'radio', max: 4,
+    title: 'Un délégué à la protection des données (DPO) ou un référent est-il désigné ?',
+    help: 'Le DPO est obligatoire pour les organismes publics et pour ceux dont l\u2019activité implique un suivi régulier et systématique à grande échelle — souvent le cas des données de santé.',
+    options: [
+      { v: 'dpo', label: 'Oui, un DPO est désigné', score: 0 },
+      { v: 'referent', label: 'Oui, un référent interne (sans titre de DPO)', score: 1 },
+      { v: 'non', label: 'Non', score: 3, alert: 'Aucun DPO ni référent désigné : la gouvernance des données est sans pilote, alors que certaines organisations y sont légalement tenues (données de santé notamment).', rec: 'Évaluez l\u2019obligation de désigner un DPO ; à défaut, nommez au minimum un référent protection des données identifié de tous.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'La désignation d\u2019un DPO est inconnue : la fonction de pilotage des données n\u2019est pas identifiable.', rec: 'Confirmez l\u2019existence ou non d\u2019un DPO auprès de la direction et documentez la réponse.' }
+    ]
+  },
+
+  /* ---------- Catégorie 6 : Formation & gouvernance ---------- */
+  {
+    id: 'q19', cat: 'formation', type: 'radio', max: 4,
+    title: 'Une politique interne ou charte d\u2019utilisation de l\u2019IA a-t-elle été rédigée et diffusée ?',
+    options: [
+      { v: 'oui', label: 'Oui, elle est en vigueur et connue du personnel', score: 0 },
+      { v: 'encours', label: 'En cours de rédaction', score: 2 },
+      { v: 'non', label: 'Non', score: 4, alert: 'Aucune charte d\u2019utilisation de l\u2019IA : les collaborateurs n\u2019ont aucun cadre pour distinguer l\u2019usage autorisé de l\u2019usage à risque.', rec: 'Adoptez une charte concise (outils autorisés, données interdites, vérification des sorties, signalement) et faites-la signer à l\u2019ensemble du personnel.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019existence d\u2019une politique interne est inconnue : même si elle existait, elle ne serait pas appropriée par les équipes.', rec: 'Vérifiez l\u2019existence de la charte auprès de la direction ; si elle existe, relancez sa diffusion et sa signature.' }
+    ]
+  },
+  {
+    id: 'q20', cat: 'formation', type: 'radio', max: 4,
+    title: 'Le personnel a-t-il été formé ou sensibilisé aux risques liés à l\u2019IA (confidentialité, données sensibles, hallucinations) ?',
+    options: [
+      { v: 'oui', label: 'Oui, formation récente (moins de 12 mois)', score: 0 },
+      { v: 'ponctuel', label: 'Sensibilisation ponctuelle uniquement', score: 2 },
+      { v: 'non', label: 'Non', score: 4, alert: 'Aucune formation du personnel : les utilisateurs ne connaissent ni les risques (fuite, hallucination, réutilisation des données) ni les bons réflexes.', rec: 'Organisez une sensibilisation obligatoire de 30 à 60 minutes : données autorisées, anonymisation, vérification des sorties, signalement des incidents.' },
+      { v: 'nesaispas', label: 'Je ne sais pas', score: 4, alert: 'L\u2019historique de formation est inconnu : la culture du risque n\u2019est pas installée.', rec: 'Interrogez les responsables RH et formation, puis planifiez une session de rattrapage.' }
+    ]
+  }
+];
+
+/* =====================================================================
+   UTILITAIRES
+===================================================================== */
+var SECTEURS = {
+  sante:     { label: 'Santé',     intro: 'Les données de santé sont des données sensibles (art. 9 RGPD) soumises à des exigences renforcées, dont le référentiel HDS pour tout hébergement.' },
+  finance:   { label: 'Finance',   intro: 'Les données financières sont confidentielles et soumises à la surveillance de l\u2019ACPR, au règlement DORA et aux obligations LCB-FT.' },
+  juridique: { label: 'Juridique', intro: 'Le secret professionnel couvre l\u2019ensemble des pièces et échanges : leur saisie dans un outil d\u2019IA public peut constituer une violation grave.' },
+  autre:     { label: 'Autre secteur', intro: 'Les recommandations ci-dessous s\u2019appliquent au socle commun RGPD applicable à toutes les organisations.' }
+};
+
+var SECTOR_RECS = {
+  sante: [
+    { t: 'Conformez tout traitement de données de santé aux exigences du référentiel HDS : hébergement agréé, contrats de sous-traitance, journalisation.', p: 1 },
+    { t: 'Interdisez formellement la saisie d\u2019identifiants patients (nom, date de naissance, n° de sécurité sociale) dans tout outil d\u2019IA non validé.', p: 1 },
+    { t: 'Vérifiez que l\u2019information des patients mentionne explicitement l\u2019usage d\u2019outils d\u2019IA et le droit d\u2019opposition.', p: 2 }
+  ],
+  finance: [
+    { t: 'Cartographiez vos outils d\u2019IA au regard des exigences DORA (gestion du risque lié aux TIC, sous-traitance, continuité d\u2019activité).', p: 1 },
+    { t: 'Documentez les traitements d\u2019IA dans le dispositif LCB-FT et vérifiez qu\u2019aucune donnée bancaire ne transite par un outil non contrôlé.', p: 1 },
+    { t: 'Préparez un dossier de preuves (registres, contrats, tests) présentable à l\u2019ACPR en cas de contrôle.', p: 2 }
+  ],
+  juridique: [
+    { t: 'Préservez le secret professionnel : interdisez la saisie de pièces identifiantes (parties, numéros de procédure, éléments de stratégie) dans les assistants publics.', p: 1 },
+    { t: 'Adoptez une charte d\u2019utilisation de l\u2019IA compatible avec les règles déontologiques de votre profession et signée par chaque collaborateur.', p: 1 },
+    { t: 'Conservez les échanges professionnels dans des espaces sécurisés du cabinet et prévoyez leur destruction conformément à vos obligations d\u2019archivage.', p: 2 }
+  ],
+  autre: [
+    { t: 'Appliquez le socle RGPD : registre des traitements à jour, information des personnes concernées, clauses de sous-traitance avec les éditeurs.', p: 2 }
+  ]
+};
+
+function levelOf(pct) {
+  if (pct < 25) return { id: 'faible', label: 'Faible', color: '#16a34a' };
+  if (pct < 50) return { id: 'modere', label: 'Modéré', color: '#d97706' };
+  if (pct < 75) return { id: 'eleve', label: 'Élevé', color: '#ea580c' };
+  return { id: 'critique', label: 'Critique', color: '#dc2626' };
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function fmtDate() {
+  return new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+/* =====================================================================
+   RENDU DU FORMULAIRE
+===================================================================== */
+var state = { step: 0, answers: {} };
+var STEP_IDS = ['inventaire', 'donnees', 'acces', 'stockage', 'conformite', 'formation'];
+
+function qsOfCat(cat) { return QUESTIONS.filter(function (q) { return q.cat === cat; }); }
+function maxOf(q) { return q.max || q.options.reduce(function (s, o) { return s + Math.max(0, o.score); }, 0); }
+
+function renderTabs() {
+  var el = document.getElementById('step-tabs');
+  el.innerHTML = STEP_IDS.map(function (cid, i) {
+    var cls = 'step-tab';
+    if (i < state.step) cls += ' done';
+    if (i === state.step) cls += ' current';
+    return '<span class="' + cls + '">' + (i + 1) + '. ' + esc(CATEGORIES[cid].label) + '</span>';
+  }).join('');
+}
+
+function renderSteps() {
+  var container = document.getElementById('steps-container');
+  var html = '';
+  STEP_IDS.forEach(function (cid, i) {
+    var cat = CATEGORIES[cid];
+    var qs = qsOfCat(cid);
+    html += '<div class="step-panel' + (i === state.step ? ' active' : '') + '" data-step="' + i + '">';
+    html += '<h2 style="font-size:22px;font-weight:800;letter-spacing:-.01em;margin:6px 0 4px">' + (i + 1) + '. ' + esc(cat.label) + '</h2>';
+    html += '<p style="color:#64748b;font-size:14px;margin-bottom:20px">' + qs.length + ' question' + (qs.length > 1 ? 's' : '') + '</p>';
+    qs.forEach(function (q) {
+      html += '<div class="q-card" data-q="' + q.id + '">';
+      html += '<div class="q-cat">' + esc(cat.label) + ' — Question ' + (QUESTIONS.indexOf(q) + 1) + '/20</div>';
+      html += '<div class="q-title">' + esc(q.title) + '</div>';
+      if (q.help) html += '<div class="q-help">' + esc(q.help) + '</div>';
+      html += '<div class="q-options">';
+      q.options.forEach(function (o, oi) {
+        var name = q.id;
+        var type = q.type === 'check' ? 'checkbox' : 'radio';
+        html += '<label class="q-option" data-v="' + esc(o.v) + '">';
+        html += '<input type="' + type + '" name="' + name + '" value="' + esc(o.v) + '">';
+        html += '<span class="box" aria-hidden="true"></span>';
+        html += '<span class="lbl">' + esc(o.label) + '</span>';
+        html += '</label>';
+      });
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+
+  container.querySelectorAll('input').forEach(function (input) {
+    input.addEventListener('change', function () {
+      /* Exclusivité « aucun outil » (q1) : cohérence des réponses */
+      if (input.name === 'q1') {
+        if (input.value === 'aucun' && input.checked) {
+          container.querySelectorAll('input[name="q1"]').forEach(function (i) {
+            if (i.value !== 'aucun') i.checked = false;
+          });
+        } else if (input.value !== 'aucun' && input.checked) {
+          var aucunEl = container.querySelector('input[name="q1"][value="aucun"]');
+          if (aucunEl) aucunEl.checked = false;
+        }
+      }
+      syncCheckboxStyles(input);
+      saveAnswers();
+      updateProgress();
+    });
+  });
+  applySavedAnswers();
+  syncAllStyles();
+  updateProgress();
+}
+
+function syncCheckboxStyles(input) {
+  var opt = input.closest('.q-option');
+  if (!opt) return;
+  opt.classList.toggle('selected', input.checked);
+}
+
+function syncAllStyles() {
+  document.querySelectorAll('#steps-container input').forEach(function (input) {
+    var opt = input.closest('.q-option');
+    if (opt) {
+      var same = opt.parentElement.querySelectorAll('input');
+      var any = Array.prototype.some.call(same, function (i) { return i.checked; });
+      opt.classList.toggle('selected', input.checked);
+    }
+  });
+}
+
+/* =====================================================================
+   PERSISTANCE LOCALE (jamais transmise)
+===================================================================== */
+var LS_KEY = 'ava_answers_v1';
+function saveAnswers() {
+  var data = {
+    org: document.getElementById('f-org').value,
+    secteur: document.getElementById('f-secteur').value,
+    role: document.getElementById('f-role').value,
+    q: {}
+  };
+  QUESTIONS.forEach(function (q) {
+    var sel = Array.prototype.map.call(
+      document.querySelectorAll('input[name="' + q.id + '"]:checked'),
+      function (i) { return i.value; }
+    );
+    data.q[q.id] = sel;
+  });
+  try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch (e) { /* stockage indisponible */ }
+}
+
+function applySavedAnswers() {
+  var raw = null;
+  try { raw = localStorage.getItem(LS_KEY); } catch (e) { return; }
+  if (!raw) return;
+  var data = null;
+  try { data = JSON.parse(raw); } catch (e) { return; }
+  if (!data || !data.q) return;
+  if (data.org) document.getElementById('f-org').value = data.org;
+  if (data.secteur) document.getElementById('f-secteur').value = data.secteur;
+  if (data.role) document.getElementById('f-role').value = data.role;
+  Object.keys(data.q).forEach(function (qid) {
+    var vals = data.q[qid] || [];
+    vals.forEach(function (v) {
+      var input = document.querySelector('input[name="' + qid + '"][value="' + v + '"]');
+      if (input) input.checked = true;
+    });
+  });
+}
+
+function collectAnswers() {
+  var a = {
+    org: document.getElementById('f-org').value.trim(),
+    secteur: document.getElementById('f-secteur').value,
+    role: document.getElementById('f-role').value.trim(),
+    q: {}
+  };
+  QUESTIONS.forEach(function (q) {
+    a.q[q.id] = Array.prototype.map.call(
+      document.querySelectorAll('input[name="' + q.id + '"]:checked'),
+      function (i) { return i.value; }
+    );
+  });
+  return a;
+}
+
+function answeredCount() {
+  var a = collectAnswers();
+  return QUESTIONS.filter(function (q) {
+    return (a.q[q.id] || []).length > 0;
+  }).length;
+}
+
+function updateProgress() {
+  var n = answeredCount();
+  var total = QUESTIONS.length;
+  var pct = Math.round(n / total * 100);
+  document.getElementById('progress-count').textContent = n + ' / ' + total + ' questions renseignées';
+  document.getElementById('progress-pct').textContent = pct + ' %';
+  var fill = document.getElementById('progress-fill');
+  fill.style.width = pct + '%';
+  document.getElementById('progress-fill-wrap').setAttribute('aria-valuenow', pct);
+  document.querySelectorAll('.step-tab').forEach(function (tab, i) {
+    tab.className = 'step-tab';
+    if (i < state.step) tab.classList.add('done');
+    if (i === state.step) tab.classList.add('current');
+  });
+}
+
+function currentStepAnswered() {
+  var cid = STEP_IDS[state.step];
+  var missing = qsOfCat(cid).filter(function (q) {
+    var el = document.querySelector('.q-card[data-q="' + q.id + '"]');
+    var checked = el.querySelectorAll('input:checked').length > 0;
+    return !checked;
+  });
+  return missing;
+}
+
+function showStep(i) {
+  state.step = Math.max(0, Math.min(STEP_IDS.length - 1, i));
+  document.querySelectorAll('.step-panel').forEach(function (p) {
+    p.classList.toggle('active', parseInt(p.getAttribute('data-step'), 10) === state.step);
+  });
+  document.getElementById('btn-prev').style.visibility = state.step === 0 ? 'hidden' : 'visible';
+  var last = state.step === STEP_IDS.length - 1;
+  document.getElementById('btn-next').textContent = last ? 'Générer le rapport' : 'Suivant →';
+  document.getElementById('form-error').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderTabs();
+  updateProgress();
+}
+
+function clearIncompleteMarks() {
+  document.querySelectorAll('.q-card.incomplete').forEach(function (c) { c.classList.remove('incomplete'); });
+}
+
+/* =====================================================================
+   CALCUL DU RAPPORT
+===================================================================== */
+function optionOf(q, v) {
+  return q.options.filter(function (o) { return o.v === v; })[0] || null;
+}
+
+function selectedOptions(q, a) {
+  var sel = a.q[q.id] || [];
+  /* Cohérence : si « aucun outil » est coché (q1), les autres sélections sont ignorées */
+  if (q.id === 'q1' && sel.indexOf('aucun') !== -1) return [];
+  return sel.map(function (v) { return optionOf(q, v); }).filter(Boolean);
+}
+
+function qScore(q, a) {
+  var opts = selectedOptions(q, a);
+  if (!opts.length) return 0;
+  if (q.type === 'radio') return opts[0].score;
+  var sum = opts.reduce(function (s, o) { return s + o.score; }, 0);
+  return Math.min(sum, maxOf(q));
+}
+
+function computeScores(a) {
+  var perCat = {};
+  var globalSum = 0;
+  STEP_IDS.forEach(function (cid) {
+    var qs = qsOfCat(cid);
+    var sum = 0, mx = 0;
+    qs.forEach(function (q) { sum += qScore(q, a); mx += maxOf(q); });
+    var pct = mx > 0 ? Math.round(sum / mx * 100) : 0;
+    perCat[cid] = { sum: sum, max: mx, pct: pct, level: levelOf(pct) };
+    globalSum += pct;
+  });
+  var globalPct = Math.round(globalSum / STEP_IDS.length);
+  return { cats: perCat, global: { pct: globalPct, level: levelOf(globalPct) } };
+}
+
+function severityOfScore(score) {
+  if (score >= 4) return 'critique';
+  if (score >= 3) return 'eleve';
+  if (score >= 2) return 'moderate';
+  return null;
+}
+
+function buildAlerts(a) {
+  var alerts = [];
+  var order = { critique: 0, eleve: 1, moderate: 2 };
+  QUESTIONS.forEach(function (q) {
+    var opts = selectedOptions(q, a);
+    var best = null;
+    opts.forEach(function (o) {
+      if (o.alert && o.score >= 2) {
+        var sev = severityOfScore(o.score);
+        if (!best || order[sev] < order[best.sev]) best = { sev: sev, opt: o };
+      }
+    });
+    if (best) {
+      alerts.push({
+        sev: best.sev,
+        cat: CATEGORIES[q.cat].label,
+        qid: q.id,
+        title: q.title,
+        text: best.opt.alert
+      });
+    }
+  });
+  alerts.sort(function (x, y) { return order[x.sev] - order[y.sev]; });
+  return alerts;
+}
+
+function buildRecs(a, scores) {
+  var seen = {};
+  var P1 = [], P2 = [], P3 = [];
+  function add(text, p) {
+    if (!text || seen[text]) return;
+    seen[text] = true;
+    if (p === 1) P1.push(text);
+    else if (p === 2) P2.push(text);
+    else P3.push(text);
+  }
+
+  /* Recommandations issues des réponses risquées */
+  QUESTIONS.forEach(function (q) {
+    selectedOptions(q, a).forEach(function (o) {
+      if (o.rec && o.score >= 2) add(o.rec, o.score >= 3 ? 1 : 2);
+    });
+  });
+
+  /* Recommandations par catégorie de risque */
+  var catRecs = {
+    inventaire: { g: 'Cartographiez l\u2019ensemble de vos usages d\u2019IA (outils, versions, comptes, finalités) et tenez cette cartographie à jour dans votre registre des traitements.', seuil: 50, p: 2 },
+    donnees: { g: 'Classez vos données par niveau de sensibilité et interdisez formellement la saisie de données sensibles dans tout outil non validé ; imposez l\u2019anonymisation.', seuil: 50, p: 1 },
+    acces: { g: 'Reprenez le contrôle des accès : comptes professionnels nominatifs, offres sans entraînement, hébergement UE documenté contractuellement.', seuil: 50, p: 1 },
+    stockage: { g: 'Centralisez et sécurisez la conservation des échanges IA, et imposez la vérification humaine systématique des contenus générés avant diffusion.', seuil: 50, p: 2 },
+    conformite: { g: 'Mettez le volet IA en conformité documentaire : registre des traitements à jour, information des personnes concernées, DPO ou référent identifié.', seuil: 50, p: 1 },
+    formation: { g: 'Adoptez une charte d\u2019utilisation de l\u2019IA et formez l\u2019ensemble du personnel aux risques (confidentialité, données sensibles, hallucinations).', seuil: 50, p: 2 }
+  };
+  STEP_IDS.forEach(function (cid) {
+    var c = catRecs[cid];
+    if (scores.cats[cid].pct >= c.seuil) add(c.g, c.p);
+  });
+
+  /* Recommandations sectorielles */
+  var sector = a.secteur || 'autre';
+  var sRecs = SECTOR_RECS[sector] || SECTOR_RECS.autre;
+  sRecs.forEach(function (r) { add(r.t, r.p); });
+
+  /* Bonnes pratiques permanentes (P3) */
+  add('Reconduisez cet audit au moins une fois par an : les outils d\u2019IA évoluent plus vite que les politiques internes.', 3);
+  add('Mettez en place un canal de signalement simple (interne) pour tout usage d\u2019IA douteux ou tout incident de données.', 3);
+  add('Exigez de chaque éditeur un contrat de sous-traitance (DPA) conforme au RGPD avant tout déploiement professionnel.', 3);
+
+  return { P1: P1, P2: P2, P3: P3 };
+}
+
+function labelOfOption(q, v) {
+  var o = optionOf(q, v);
+  return o ? o.label : v;
+}
+
+function buildInventory(a) {
+  var rows = [];
+  var q1 = selectedOptions(QUESTIONS[0], a).filter(function (o) { return o.v !== 'aucun'; });
+  var toolNames = q1.map(function (o) { return o.label; });
+  rows.push({ k: 'Outils d\u2019IA déclarés', v: toolNames.length ? toolNames.join(' · ') : 'Aucun outil déclaré' });
+
+  var q2 = selectedOptions(QUESTIONS[1], a);
+  rows.push({ k: 'Proportion d\u2019utilisateurs', v: q2.length ? q2[0].label : '—' });
+
+  var q4 = selectedOptions(QUESTIONS[3], a);
+  rows.push({ k: 'Services concernés', v: q4.length ? q4.map(function (o) { return o.label; }).join(' · ') : '—' });
+
+  var q5 = selectedOptions(QUESTIONS[4], a);
+  rows.push({ k: 'Finalités principales', v: q5.length ? q5.map(function (o) { return o.label; }).join(' · ') : '—' });
+
+  var q6 = selectedOptions(QUESTIONS[5], a).filter(function (o) { return o.v !== 'aucune' && o.v !== 'nesaispas'; });
+  var q6ns = selectedOptions(QUESTIONS[5], a).filter(function (o) { return o.v === 'nesaispas'; });
+  rows.push({ k: 'Types de données saisies', v: (q6.length ? q6.map(function (o) { return o.label; }).join(' · ') : 'Aucune donnée sensible déclarée') + (q6ns.length ? ' · (nature des données inconnue)' : '') });
+
+  var q10 = selectedOptions(QUESTIONS[9], a);
+  rows.push({ k: 'Type de comptes', v: q10.length ? q10[0].label : '—' });
+
+  var q13 = selectedOptions(QUESTIONS[12], a);
+  rows.push({ k: 'Conservation des échanges', v: q13.length ? q13[0].label : '—' });
+
+  return rows;
+}
+
+function catComment(cid, a, s) {
+  var lvl = s.level;
+  switch (cid) {
+    case 'inventaire':
+      if (lvl.id === 'faible') return 'Les usages d\u2019IA sont connus et maîtrisés.';
+      if (lvl.id === 'modere') return 'Les usages sont partiellement connus ; la cartographie reste incomplète.';
+      return 'Plusieurs outils sont en usage sans cartographie fiable : l\u2019organisation ne voit pas l\u2019ensemble de son exposition.';
+    case 'donnees':
+      if (lvl.id === 'faible') return 'Les données saisies semblent non sensibles ou anonymisées.';
+      if (lvl.id === 'modere') return 'Des données personnelles circulent dans les outils ; les mesures de minimisation sont insuffisantes.';
+      return 'Des données sensibles ou hautement sensibles sont saisies : exposition majeure au regard du RGPD et du secteur.';
+    case 'acces':
+      if (lvl.id === 'faible') return 'Les accès sont professionnels et les flux de données maîtrisés.';
+      if (lvl.id === 'modere') return 'Les comptes et la localisation des données sont partiellement contrôlés.';
+      return 'Comptes personnels, versions gratuites ou transferts hors UE : les données échappent au contrôle de l\u2019organisation.';
+    case 'stockage':
+      if (lvl.id === 'faible') return 'Les échanges sont conservés dans un espace contrôlé et les sorties vérifiées.';
+      if (lvl.id === 'modere') return 'La conservation et la vérification des contenus générés sont insuffisamment encadrées.';
+      return 'Les historiques sont dispersés ou non vérifiés : aucune traçabilité exploitable en cas d\u2019incident.';
+    case 'conformite':
+      if (lvl.id === 'faible') return 'Le volet documentaire (registre, information, DPO) est en place.';
+      if (lvl.id === 'modere') return 'La conformité documentaire est partielle ou en cours.';
+      return 'Registre, information des personnes ou gouvernance des données absents : la conformité n\u2019est pas démontrable.';
+    case 'formation':
+      if (lvl.id === 'faible') return 'Le personnel est formé et encadré par une charte connue.';
+      if (lvl.id === 'modere') return 'La sensibilisation existe mais reste ponctuelle et incomplète.';
+      return 'Aucune charte ni formation : les collaborateurs utilisent l\u2019IA sans cadre ni conscience du risque.';
+  }
+  return '';
+}
+
+function topFindings(alerts, scores) {
+  var out = [];
+  alerts.slice(0, 3).forEach(function (al) { out.push(al.text); });
+  if (!out.length) {
+    STEP_IDS.forEach(function (cid) {
+      if (scores.cats[cid].pct >= 50) out.push('Risque ' + scores.cats[cid].level.label.toLowerCase() + ' détecté sur la catégorie « ' + CATEGORIES[cid].label + ' » (' + scores.cats[cid].pct + '/100).');
+    });
+  }
+  if (!out.length) out.push('Aucun point de vigilance majeur n\u2019a été détecté sur la base de vos réponses.');
+  return out.slice(0, 4);
+}
+
+function renderReport(a, scores, alerts, recs, inventory) {
+  var sector = SECTEURS[a.secteur || 'autre'];
+  var org = a.org || 'Organisation non précisée';
+  var g = scores.global;
+
+  var html = '';
+  html += '<div class="print-only">AI Visibility Audit — Rapport d\u2019alerte généré localement le ' + fmtDate() + '. Document confidentiel. Exemple d\u2019illustration pour impression : ne pas diffuser sans vérification.</div>';
+
+  html += '<div class="rep-head">';
+  html += '<div><div class="rep-brand">Rapport d\u2019alerte — Audit de visibilité IA</div>';
+  html += '<div class="rep-org">' + esc(org) + '</div></div>';
+  html += '<div class="rep-meta"><strong>Date :</strong> ' + fmtDate() + '<br><strong>Secteur :</strong> ' + esc(sector.label) + '<br><strong>Fonction du répondant :</strong> ' + esc(a.role || '—') + '<br><strong>Méthode :</strong> questionnaire de 20 questions, calcul local</div>';
+  html += '</div>';
+
+  /* Score global */
+  html += '<div class="score-hero">';
+  html += '<div class="score-big">';
+  html += '<div class="num" style="color:' + g.level.color + '">' + g.pct + '<span class="den">/100</span></div>';
+  html += '<div class="lvl" style="background:' + g.level.color + '">Risque ' + g.level.label.toUpperCase() + '</div>';
+  html += '</div>';
+  html += '<div class="score-info">';
+  html += '<div class="t">Score global de risque</div>';
+  html += '<div class="d">Moyenne des 6 catégories d\u2019audit. Plus le score est élevé, plus l\u2019exposition de l\u2019organisation est importante. Un score de 0 à 24 indique un niveau faible, 25 à 49 modéré, 50 à 74 élevé, 75 à 100 critique.</div>';
+  html += '<div class="score-bar"><i style="width:' + g.pct + '%"></i></div>';
+  html += '<div class="score-ticks"><span>0 — Faible</span><span>50 — Élevé</span><span>100 — Critique</span></div>';
+  html += '</div></div>';
+
+  /* 1. Synthèse */
+  html += '<h2 class="rep-h2">1. Synthèse exécutive</h2>';
+  html += '<p class="rep-p">Sur la base des 20 réponses fournies le ' + fmtDate() + ', l\u2019organisation présente un profil de risque <strong>' + g.level.label.toLowerCase() + '</strong> avec un score global de <strong>' + g.pct + '/100</strong>. ' + esc(sector.intro) + '</p>';
+  html += '<p class="rep-p"><strong>Points de vigilance prioritaires :</strong></p><ul style="margin:0 0 14px 20px;display:grid;gap:8px">';
+  topFindings(alerts, scores).forEach(function (f) {
+    html += '<li style="font-size:14px;color:#334155">' + esc(f) + '</li>';
+  });
+  html += '</ul>';
+  html += '<p class="rep-p">Ce rapport d\u2019alerte est un <strong>diagnostic automatique</strong> établi à partir de vos déclarations. Il ne constitue ni une certification, ni un audit complet : il identifie les zones à traiter en priorité et prépare la démarche de mise en conformité.</p>';
+
+  /* 2. Inventaire */
+  html += '<h2 class="rep-h2">2. Inventaire des usages déclarés</h2>';
+  html += '<p class="rep-p" style="margin-bottom:12px">Inventaire reconstitué à partir de vos réponses. Il est déclaratif : il reflète ce qui a été déclaré, pas nécessairement l\u2019intégralité des usages réels.</p>';
+  html += '<table class="rep-table"><tbody>';
+  inventory.forEach(function (row) {
+    html += '<tr><th style="width:38%">' + esc(row.k) + '</th><td>' + esc(row.v) + '</td></tr>';
+  });
+  html += '</tbody></table>';
+
+  /* 3. Risques par catégorie */
+  html += '<h2 class="rep-h2">3. Niveaux de risque par catégorie</h2>';
+  html += '<div class="risk-rows">';
+  STEP_IDS.forEach(function (cid) {
+    var c = scores.cats[cid];
+    html += '<div class="risk-row">';
+    html += '<div class="name">' + CATEGORIES[cid].label + '</div>';
+    html += '<div class="bar"><i style="width:' + c.pct + '%;background:' + c.level.color + '"></i></div>';
+    html += '<div class="pct">' + c.pct + '/100</div>';
+    html += '<div class="lvl" style="background:' + c.level.color + '">' + c.level.label + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '<div class="legend">';
+  html += '<span><i style="background:#16a34a"></i>0–24 Faible</span>';
+  html += '<span><i style="background:#d97706"></i>25–49 Modéré</span>';
+  html += '<span><i style="background:#ea580c"></i>50–74 Élevé</span>';
+  html += '<span><i style="background:#dc2626"></i>75–100 Critique</span>';
+  html += '</div>';
+  html += '<p class="rep-p" style="margin-top:14px"><strong>Lecture :</strong></p><ul style="margin:0 0 0 20px;display:grid;gap:8px">';
+  STEP_IDS.forEach(function (cid) {
+    html += '<li style="font-size:14px;color:#334155"><strong>' + CATEGORIES[cid].label + ' (' + scores.cats[cid].pct + '/100 — ' + scores.cats[cid].level.label + ') :</strong> ' + esc(catComment(cid, a, scores.cats[cid])) + '</li>';
+  });
+  html += '</ul>';
+
+  /* 4. Alertes */
+  html += '<h2 class="rep-h2">4. Alertes détaillées</h2>';
+  if (alerts.length) {
+    var sevLabel = { critique: 'Critique', eleve: 'Élevé', moderate: 'Modéré' };
+    var sevColor = { critique: '#dc2626', eleve: '#ea580c', moderate: '#d97706' };
+    alerts.forEach(function (al) {
+      html += '<div class="alert-item ' + al.sev + '">';
+      html += '<span class="chip" style="background:' + sevColor[al.sev] + '">' + sevLabel[al.sev] + '</span>';
+      html += '<div class="txt"><strong>' + esc(al.text) + '</strong>' + esc(al.cat) + ' — « ' + esc(al.title) + ' »</div>';
+      html += '</div>';
+    });
+  } else {
+    html += '<p class="rep-p">Aucune alerte spécifique n\u2019a été déclenchée par vos réponses. Maintenez vos pratiques actuelles et reconduisez l\u2019audit dans 12 mois.</p>';
+  }
+
+  /* 5. Recommandations */
+  html += '<h2 class="rep-h2">5. Recommandations priorisées</h2>';
+  var groups = [
+    { key: 'P1', title: 'Priorité 1 — Actions critiques (sous 30 jours)', items: recs.P1 },
+    { key: 'P2', title: 'Priorité 2 — Actions importantes (sous 90 jours)', items: recs.P2 },
+    { key: 'P3', title: 'Priorité 3 — Bonnes pratiques (à planifier)', items: recs.P3 }
+  ];
+  groups.forEach(function (grp) {
+    var MAX_SHOWN = 10;
+    html += '<div class="rec-group ' + grp.key.toLowerCase() + '">';
+    html += '<div class="g-title"><span class="tag">' + grp.key + '</span>' + esc(grp.title) + '</div>';
+    if (grp.items.length) {
+      html += '<ol>';
+      grp.items.slice(0, MAX_SHOWN).forEach(function (it) { html += '<li>' + esc(it) + '</li>'; });
+      if (grp.items.length > MAX_SHOWN) {
+        html += '<li style="color:#64748b;font-style:italic">… et ' + (grp.items.length - MAX_SHOWN) + ' autres recommandation' + ((grp.items.length - MAX_SHOWN) > 1 ? 's' : '') + ' — l\u2019ensemble est détaillé et chiffré dans le rapport complet (149 € TTC).</li>';
+      }
+      html += '</ol>';
+    } else {
+      html += '<p style="font-size:13.5px;color:#64748b;padding:4px 2px">Aucune action requise à ce niveau.</p>';
+    }
+    html += '</div>';
+  });
+
+  /* 6. Prochaines étapes */
+  html += '<h2 class="rep-h2">6. Prochaines étapes</h2>';
+  html += '<div class="next-steps">';
+  html += '<h3>Donner une suite à ce rapport</h3>';
+  html += '<p>Ce rapport d\u2019alerte identifie les zones de risque. Pour passer à l\u2019action, trois options : approfondir avec un expert, engager la mise en conformité, ou sécuriser dans la durée.</p>';
+  html += '<div class="prices"><span>Audit de démarrage — 0 € (ce rapport)</span><span>Rapport complet — 149 € TTC</span><span>Audit annuel + lettre de conformité — 299 € TTC / an</span></div>';
+  html += '<p style="margin-bottom:0">Conservez ce rapport : il documente votre démarche de diligence. Pour un accompagnement, utilisez le formulaire de contact sur la page d\u2019accueil.</p>';
+  html += '</div>';
+
+  html += '<div class="rep-disclaimer">';
+  html += 'Rapport d\u2019alerte généré automatiquement par AI Visibility Audit à partir des réponses au questionnaire (20 questions), calculé localement dans le navigateur. Ce document est un outil de diagnostic déclaratif : il ne constitue pas un audit complet, ni un avis juridique, ni une certification. Il ne remplace pas l\u2019analyse d\u2019un délégué à la protection des données, d\u2019un avocat ou d\u2019un auditeur spécialisé. Les recommandations doivent être adaptées au contexte de l\u2019organisation.';
+  html += '</div>';
+
+  document.getElementById('report').innerHTML = html;
+}
+
+/* =====================================================================
+   FLUX
+===================================================================== */
+function generateReport() {
+  var a = collectAnswers();
+  if (!a.secteur) {
+    showStep(0);
+    return;
+  }
+  var missing = QUESTIONS.filter(function (q) { return (a.q[q.id] || []).length === 0; });
+  if (missing.length) {
+    var first = missing[0];
+    var stepIdx = STEP_IDS.indexOf(first.cat);
+    document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
+    document.getElementById('screen-form').classList.add('active');
+    showStep(stepIdx);
+    clearIncompleteMarks();
+    var card = document.querySelector('.q-card[data-q="' + first.id + '"]');
+    if (card) {
+      card.classList.add('incomplete');
+      var err = document.getElementById('form-error');
+      err.textContent = 'Il reste ' + missing.length + ' question' + (missing.length > 1 ? 's' : '') + ' sans réponse (dont : « ' + first.title + ' »). Merci de répondre à toutes les questions pour générer un rapport fiable.';
+      err.classList.add('show');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return;
+  }
+
+  var scores = computeScores(a);
+  var alerts = buildAlerts(a);
+  var recs = buildRecs(a, scores);
+  var inventory = buildInventory(a);
+  renderReport(a, scores, alerts, recs, inventory);
+
+  document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
+  document.getElementById('screen-report').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  saveAnswers();
+}
+
+/* =====================================================================
+   ÉVÉNEMENTS
+===================================================================== */
+document.getElementById('btn-start').addEventListener('click', function () {
+  var secteur = document.getElementById('f-secteur').value;
+  if (!secteur) {
+    document.getElementById('f-secteur').focus();
+    var err = document.getElementById('form-error');
+    err.textContent = 'Merci d\u2019indiquer votre secteur d\u2019activité pour adapter le rapport.';
+    err.classList.add('show');
+    return;
+  }
+  document.getElementById('form-error').classList.remove('show');
+  document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
+  document.getElementById('screen-form').classList.add('active');
+  showStep(0);
+  window.scrollTo({ top: 0, behavior: 'auto' });
+});
+
+document.getElementById('btn-next').addEventListener('click', function () {
+  var missing = currentStepAnswered();
+  if (missing.length) {
+    clearIncompleteMarks();
+    var card = document.querySelector('.q-card[data-q="' + missing[0].id + '"]');
+    if (card) {
+      card.classList.add('incomplete');
+      var err = document.getElementById('form-error');
+      err.textContent = 'Merci de répondre à la question « ' + missing[0].title + ' » avant de continuer.';
+      err.classList.add('show');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return;
+  }
+  if (state.step === STEP_IDS.length - 1) {
+    generateReport();
+  } else {
+    showStep(state.step + 1);
+  }
+});
+
+document.getElementById('btn-prev').addEventListener('click', function () {
+  showStep(state.step - 1);
+});
+
+document.getElementById('btn-print').addEventListener('click', function () {
+  window.print();
+});
+
+document.getElementById('f-secteur').addEventListener('change', saveAnswers);
+document.getElementById('f-org').addEventListener('input', saveAnswers);
+document.getElementById('f-role').addEventListener('input', saveAnswers);
+
+/* Hooks de test (utilisés pour la vérification technique) */
+window.__audit = {
+  QUESTIONS: QUESTIONS,
+  CATEGORIES: CATEGORIES,
+  computeScores: computeScores,
+  buildAlerts: buildAlerts,
+  buildRecs: buildRecs,
+  buildInventory: buildInventory,
+  levelOf: levelOf,
+  generateReport: generateReport
+};
+
+/* Initialisation */
+renderTabs();
+renderSteps();
+showStep(0);
+</script>
+</body>
+</html>
