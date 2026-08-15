@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Visibility Audit — Cartographiez vos usages de l'IA et sécurisez vos données | Conformité RGPD, HDS, DORA</title>
 <meta name="description" content="Audit de visibilité des outils d'IA pour les organisations réglementées (santé, finance, juridique). Inventaire des usages, analyse des risques et plan d'action. Audit de démarrage gratuit en 15 minutes.">
+<meta property="og:title" content="AI Visibility Audit — Cartographie de vos usages IA">
+<meta property="og:description" content="Audit de visibilité des outils d'IA pour organisations réglementées : inventaire des usages, analyse des risques et plan d'action. Rapport complet à partir de 149 €.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "AI Visibility Audit — Cartographie de vos usages IA",
+  "description": "Audit de visibilité des outils d'IA pour organisations réglementées : inventaire des usages, analyse des risques et plan d'action. Rapport complet à partir de 149 €.",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "EUR",
+    "price": "149",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+
 <style>
   :root{
     --bg:#f8fafc;
@@ -205,6 +224,12 @@
     .grid-4,.grid-3{grid-template-columns:1fr}
     .hero{padding:48px 0}
   }
+
+  /* Révélation progressive au scroll (non intrusive) */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+  @media print{.reveal{opacity:1!important;transform:none!important}}
 </style>
 </head>
 <body>
@@ -299,7 +324,7 @@
 </section>
 
 <!-- Problème -->
-<section class="block" id="probleme">
+<section class="block reveal" id="probleme">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Le problème</div>
@@ -332,7 +357,7 @@
 </section>
 
 <!-- Méthode -->
-<section class="block alt" id="methode">
+<section class="block alt reveal" id="methode">
   <div class="container">
     <div class="section-head">
       <div class="kicker">La méthode</div>
@@ -369,7 +394,7 @@
 </section>
 
 <!-- Secteurs -->
-<section class="block" id="secteurs">
+<section class="block reveal" id="secteurs">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Secteurs couverts</div>
@@ -425,7 +450,7 @@
 </section>
 
 <!-- Offres -->
-<section class="block alt" id="offres">
+<section class="block alt reveal" id="offres">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Nos offres</div>
@@ -487,7 +512,7 @@
 </section>
 
 <!-- Témoignages -->
-<section class="block" id="temoignages">
+<section class="block reveal" id="temoignages">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Retours d'expérience</div>
@@ -508,7 +533,7 @@
 </section>
 
 <!-- FAQ -->
-<section class="block alt" id="faq">
+<section class="block alt reveal" id="faq">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Questions fréquentes</div>
@@ -542,7 +567,7 @@
 </section>
 
 <!-- Contact -->
-<section class="block" id="contact">
+<section class="block reveal" id="contact">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Contact</div>
@@ -689,6 +714,23 @@
         btn.textContent = 'Envoyer le message';
       });
   });
+})();
+</script>
+<script>
+/* Révélation au scroll — IntersectionObserver, fallback si absent */
+(function(){
+  var reveals = document.querySelectorAll(".reveal");
+  if(!reveals.length) return;
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add("visible"); io.unobserve(entry.target); }
+      });
+    }, {threshold: .12});
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add("visible"); });
+  }
 })();
 </script>
 </body>

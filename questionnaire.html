@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Questionnaire d'audit — AI Visibility Audit | 20 questions, rapport immédiat</title>
 <meta name="description" content="Questionnaire d'audit de visibilité des usages d'IA : 20 questions sur les outils, les données, les accès et la gouvernance. Rapport d'alerte généré instantanément dans votre navigateur.">
+<meta property="og:title" content="AI Visibility Audit — Questionnaire d'audit">
+<meta property="og:description" content="Questionnaire d'audit en 20 questions sur vos usages d'IA, vos données et votre gouvernance, avec rapport d'alerte instantané. Rapport complet à partir de 149 €.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "AI Visibility Audit — Questionnaire d'audit",
+  "description": "Questionnaire d'audit en 20 questions sur vos usages d'IA, vos données et votre gouvernance, avec rapport d'alerte instantané. Rapport complet à partir de 149 €.",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "EUR",
+    "price": "149",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+
 <style>
   :root{
     --bg:#f8fafc;
@@ -212,6 +231,12 @@
     .rep-meta{text-align:left}
     .step-tabs{display:none}
   }
+
+  /* Révélation progressive au scroll (non intrusive) */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+  @media print{.reveal{opacity:1!important;transform:none!important}}
 </style>
 </head>
 <body>
@@ -235,7 +260,7 @@
 <main class="container">
 
   <!-- ============ ÉCRAN 1 : INTRODUCTION ============ -->
-  <section class="screen active" id="screen-intro">
+  <section class="screen active reveal" id="screen-intro">
     <div class="intro-card">
       <div class="q-cat" style="color:#1d4ed8">Audit de démarrage — gratuit</div>
       <h1>Cartographiez vos usages de l'IA en 15 minutes</h1>
@@ -282,7 +307,7 @@
   </section>
 
   <!-- ============ ÉCRAN 2 : FORMULAIRE ============ -->
-  <section class="screen" id="screen-form">
+  <section class="screen reveal" id="screen-form">
     <div class="progress-wrap no-print">
       <div class="container" style="padding:0">
         <div class="progress-top">
@@ -305,7 +330,7 @@
   </section>
 
   <!-- ============ ÉCRAN 3 : RAPPORT ============ -->
-  <section class="screen" id="screen-report">
+  <section class="screen reveal" id="screen-report">
     <div class="report-toolbar no-print">
       <button type="button" class="btn btn-primary btn-lg" id="btn-print">🖨 Imprimer / enregistrer en PDF</button>
       <a href="questionnaire.html" class="btn btn-secondary btn-lg">Recommencer l'audit</a>
@@ -1255,6 +1280,23 @@ window.__audit = {
 renderTabs();
 renderSteps();
 showStep(0);
+</script>
+<script>
+/* Révélation au scroll — IntersectionObserver, fallback si absent */
+(function(){
+  var reveals = document.querySelectorAll(".reveal");
+  if(!reveals.length) return;
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add("visible"); io.unobserve(entry.target); }
+      });
+    }, {threshold: .12});
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add("visible"); });
+  }
+})();
 </script>
 </body>
 </html>

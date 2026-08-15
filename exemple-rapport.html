@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exemple de rapport d'audit — AI Visibility Audit | Rapport d'alerte anonymisé</title>
 <meta name="description" content="Exemple de rapport d'alerte AI Visibility Audit : inventaire des usages d'IA, niveaux de risque par catégorie, alertes et recommandations priorisées. Données anonymisées et fictives.">
+<meta property="og:title" content="AI Visibility Audit — Exemple de rapport d'alerte">
+<meta property="og:description" content="Exemple de rapport d'alerte AI Visibility Audit : inventaire des usages IA, niveaux de risque et recommandations priorisées. Rapport complet à partir de 149 €.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "AI Visibility Audit — Exemple de rapport d'alerte",
+  "description": "Exemple de rapport d'alerte AI Visibility Audit : inventaire des usages IA, niveaux de risque et recommandations priorisées. Rapport complet à partir de 149 €.",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "EUR",
+    "price": "149",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+
 <style>
   :root{
     --bg:#f8fafc;
@@ -148,6 +167,12 @@
     .rep-head{flex-direction:column}
     .rep-meta{text-align:left}
   }
+
+  /* Révélation progressive au scroll (non intrusive) */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+  @media print{.reveal{opacity:1!important;transform:none!important}}
 </style>
 </head>
 <body>
@@ -178,7 +203,7 @@
     <a href="index.html" class="btn btn-secondary btn-lg">Retour à l'accueil</a>
   </div>
 
-  <article class="report-paper">
+  <article class="report-paper reveal">
     <div class="print-only">AI Visibility Audit — Exemple de rapport d'alerte (document fictif, anonymisé). Généré à titre d'illustration.</div>
 
     <div class="rep-head">
@@ -343,5 +368,22 @@
   AI Visibility Audit — Exemple de rapport d'alerte (données fictives, anonymisées). Générer votre propre rapport : <a href="questionnaire.html">audit gratuit en 15 minutes →</a>
 </footer>
 
+<script>
+/* Révélation au scroll — IntersectionObserver, fallback si absent */
+(function(){
+  var reveals = document.querySelectorAll(".reveal");
+  if(!reveals.length) return;
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add("visible"); io.unobserve(entry.target); }
+      });
+    }, {threshold: .12});
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add("visible"); });
+  }
+})();
+</script>
 </body>
 </html>
