@@ -155,7 +155,7 @@
   .offers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
   .offer{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;display:flex;flex-direction:column;box-shadow:var(--shadow);position:relative}
   .offer.featured{border:2px solid var(--blue);box-shadow:0 4px 16px rgba(29,78,216,.12)}
-  .offer-ribbon{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:999px;white-space:nowrap}
+  .offer-ribbon{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:#0369A1;color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:999px;white-space:nowrap}
   .offer h3{font-size:17px;font-weight:800;color:var(--ink);margin-bottom:4px}
   .offer .sub{font-size:13.5px;color:var(--ink-3);margin-bottom:18px}
   .offer .price{font-size:38px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1;margin-bottom:4px}
@@ -239,7 +239,7 @@
   @media print{.reveal{opacity:1!important;transform:none!important}}
 
 :root {
---bg:#F2F7FD; --surface:#FFFFFF; --ink:#0B1F33; --ink-2:#1E3A5F; --ink-3:#5B7895;
+--bg:#F2F7FD; --surface:#FFFFFF; --ink:#0B1F33; --ink-2:#1E3A5F; --ink-3:#475569;
   --blue:#0EA5E9; --blue-hover:#0284C7; --blue-50:#E8F6FE; --blue-100:#D2EDFC;
   --border:#DCE9F5; --border-strong:#BFD9EC; --steel:#475569;
   --warn-bg:#FFF8E7; --warn-border:#F59E0B; --warn-ink:#92400E; --ok:#15803D;
@@ -249,7 +249,7 @@
 /* ============ FUTUR V3 — visibility-audit ============ */
 :root {
   --fv-a1:#0EA5E9; --fv-a2:#0369A1; --fv-a3:#2DD4BF; --fv-al:#0369A1;
-  --fv-bg:#F2F7FD; --fv-bg2:#FFFFFF; --fv-text:#0B1F33; --fv-muted:#5B7895;
+  --fv-bg:#F2F7FD; --fv-bg2:#FFFFFF; --fv-text:#0B1F33; --fv-muted:#475569;
   --fv-tf:'Archivo',sans-serif; --fv-bf:'Archivo',sans-serif;
 }
 html { scroll-behavior:smooth; }
@@ -376,6 +376,13 @@ input:focus, select:focus, textarea:focus, .champ:focus {
    .offer.featured { border-color:rgba(14,165,233,.5); box-shadow:0 0 40px rgba(14,165,233,.2); }
    .price { color:var(--fv-a1); }
    .warn-banner { border:1px solid rgba(253,230,138,.4); }
+   /* Correctifs contraste AA (audit 2026-08-20) */
+   .aside-score .score-num { color:#0369A1; }
+   .step .step-num { background:#0369A1; }
+   .aside-score .score-lbl { color:#334155; }
+   /* sky #0EA5E9 sur blanc = 2.77 → sky-700 */
+   .step .step-price { color:#0369A1; }
+   .brand-name span { color:#0369A1; }
    
 /* ---------- Mobile ---------- */
 @media (max-width:760px) {
@@ -462,11 +469,11 @@ input:focus, select:focus, textarea:focus, .champ:focus {
       <div class="aside-score">
         <div>
           <div class="score-lbl">Exemple de score global</div>
-          <div style="font-size:12.5px;color:#64748b;margin-top:4px">Rapport d'alerte automatique</div>
+          <div style="font-size:12.5px;color:#475569;margin-top:4px">Rapport d'alerte automatique</div>
         </div>
         <div style="text-align:right">
-          <div class="score-num">64<small style="font-size:15px;color:#64748b">/100</small></div>
-          <div class="score-lbl" style="color:#ea580c">Risque élevé</div>
+          <div class="score-num">64<small style="font-size:15px;color:#475569">/100</small></div>
+          <div class="score-lbl" style="color:#c2410c">Risque élevé</div>
         </div>
       </div>
     </aside>
@@ -666,7 +673,7 @@ input:focus, select:focus, textarea:focus, .champ:focus {
         <a href="#contact" class="btn btn-secondary">Demander un audit annuel</a>
       </div>
     </div>
-    <p style="margin-top:18px;font-size:13.5px;color:#64748b;text-align:center">Les offres « Rapport complet » et « Audit annuel » sont facturées après validation d'un devis. Le rapport d'alerte gratuit n'engage à rien.</p>
+    <p style="margin-top:18px;font-size:13.5px;color:#475569;text-align:center">Les offres « Rapport complet » et « Audit annuel » sont facturées après validation d'un devis. Le rapport d'alerte gratuit n'engage à rien.</p>
   </div>
 </section>
 
