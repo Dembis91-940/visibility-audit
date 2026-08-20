@@ -1,7 +1,7 @@
 window.CHATBOT_CONFIG = {
   "name": "AI Visibility Audit",
   "subtitle": "Votre assistant conformité IA",
-  "accent": "#1d4ed8",
+  "accent": "#0EA5E9",
   "welcome": "Bonjour ! 👋 Je suis l'assistant AI Visibility Audit. Audit gratuit en 15 minutes, rapport d'alerte immédiat, rapport complet 149 € : je vous réponds en 30 secondes.",
   "quick": [
     "L'audit est vraiment gratuit ?",
